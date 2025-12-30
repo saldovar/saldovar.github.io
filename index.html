@@ -3,58 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Drive - Procedural Explorer</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a1a1a">
+    <title>Zen Drive - Procedural Journey</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #87ceeb; font-family: sans-serif; }
+        #ui-overlay { position: absolute; bottom: 20px; left: 20px; color: white; pointer-events: none; }
+        .controls { position: absolute; bottom: 20px; right: 20px; display: none; gap: 10px; }
+        .btn { width: 60px; height: 60px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; user-select: none; pointer-events: auto; }
+        @media (pointer: coarse) { .controls { display: grid; grid-template-columns: repeat(3, 1fr); } }
+    </style>
 </head>
 <body>
-    <div id="ui-container">
-        <div id="stats">Velocidad: <span id="speed-val">0</span> km/h</div>
-        
-        <div id="controls-panel">
-            <input type="number" id="seed-input" placeholder="Seed (ej: 1234)">
-            <input type="text" id="yt-input" placeholder="Link de YouTube">
-            <button id="btn-load-yt">Cargar YT</button>
-            <div class="file-input-wrapper">
-                <label for="local-audio">Cargar MP3 Local</label>
-                <input type="file" id="local-audio" accept="audio/*">
-            </div>
-            <div class="volume-container">
-                <span>Vol:</span>
-                <input type="range" id="vol-slider" min="0" max="100" value="50">
-            </div>
-        </div>
+    <div id="ui-overlay">WASD para conducir | Zen Drive v1.0</div>
+    
+    <div class="controls" id="mobile-controls">
+        <div id="btn-left" class="btn">L</div>
+        <div id="btn-up" class="btn">^</div>
+        <div id="btn-right" class="btn">R</div>
+        <div></div>
+        <div id="btn-down" class="btn">v</div>
     </div>
 
-    <div id="mobile-controls" class="hidden">
-        <div class="control-group left">
-            <button id="btn-left" class="joy-btn">L</button>
-            <button id="btn-right" class="joy-btn">R</button>
-        </div>
-        <div class="control-group right">
-            <button id="btn-up" class="joy-btn">ACCEL</button>
-            <button id="btn-down" class="joy-btn">BRAKE</button>
-        </div>
-    </div>
-
-    <div id="youtube-player"></div>
-
-    <canvas id="gameCanvas"></canvas>
-
-    <script src="map.js"></script>
-<script src="worldObjects.js"></script> 
-<script src="particles.js"></script>    
-<script src="car.js"></script>
-<script src="camera.js"></script>
-<script src="ui.js"></script>
-<script src="musicYT.js"></script>
-<script src="musicLocal.js"></script>
-<script src="game.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
     </script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
+
