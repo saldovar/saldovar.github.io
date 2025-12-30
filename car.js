@@ -1,6 +1,23 @@
 import * as THREE from 'three';
 
 export class Car {
+    // Dentro de la clase Car en car.js
+adjustToRoad(road) {
+    // Calculamos en qué punto de la carretera estamos según la Z del auto
+    // 0.0001 es un factor de escala basado en la longitud total (200 puntos * 40 dist = 8000)
+    const t = (this.group.position.z / 8000) % 1; 
+    if (t >= 0 && t <= 1) {
+        const roadPoint = road.curve.getPointAt(t);
+        // Suavizamos el movimiento vertical
+        this.group.position.y = THREE.MathUtils.lerp(this.group.position.y, roadPoint.y + 0.5, 0.1);
+        
+        // Opcional: Que el auto se incline según la curva
+        const tangent = road.curve.getTangentAt(t);
+        const targetRotation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,0,1), tangent);
+        this.group.quaternion.slerp(targetRotation, 0.1);
+    }
+}
+    
     constructor(scene) {
         this.group = new THREE.Group();
         
