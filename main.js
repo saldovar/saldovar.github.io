@@ -65,13 +65,14 @@ function handleKey(code, isPressed) {
 
 function animate() {
     requestAnimationFrame(animate);
-    car.adjustToRoad(road)
-    car.update(keys);
 
-    // Cámara suave siguiendo al auto
-    const offset = new THREE.Vector3(0, 5, -10);
-    offset.applyQuaternion(car.group.quaternion);
-    camera.position.lerp(car.group.position.clone().add(offset), 0.1);
+    car.update(keys, road); // Pasamos road aquí
+
+    // Seguimiento de cámara mejorado
+    const camOffset = new THREE.Vector3(0, 6, -15);
+    camOffset.applyQuaternion(car.group.quaternion);
+    const targetCamPos = car.group.position.clone().add(camOffset);
+    camera.position.lerp(targetCamPos, 0.1);
     camera.lookAt(car.group.position);
 
     renderer.render(scene, camera);
