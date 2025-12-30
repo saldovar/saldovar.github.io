@@ -65,7 +65,7 @@ function handleKey(code, isPressed) {
 
 function animate() {
     requestAnimationFrame(animate);
-
+    car.adjustToRoad(road)
     car.update(keys);
 
     // Cámara suave siguiendo al auto
