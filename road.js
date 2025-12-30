@@ -3,48 +3,71 @@ import * as THREE from 'three';
 export class Road {
     constructor(scene) {
         this.scene = scene;
-        this.points = [];
         this.curve = null;
-        this.width = 10;
-        this.segments = 200;
+        this.width = 12; // Ancho de la carretera
         
-        this.generatePoints();
-        this.createMesh();
+        this.generateRoad();
     }
 
-    generatePoints() {
-        // Generamos puntos determinísticos usando Seno para curvas suaves y elevación
-        for (let i = 0; i < 100; i++) {
-            const z = i * 50; // Avanza cada 50 unidades
-            const x = Math.sin(i * 0.3) * 20; // Curvas laterales suaves
-            const y = Math.cos(i * 0.2) * 5;  // Elevaciones suaves
-            this.points.push(new THREE.Vector3(x, y, z));
+    generateRoad() {
+        const points = [];
+        // Generamos 200 puntos para un viaje largo y suave
+        for (let i = 0; i < 200; i++) {
+            points.push(new THREE.Vector3(
+                Math.sin(i * 0.15) * 15, // Curvas suaves
+                Math.cos(i * 0.1) * 3,   // Altibajos suaves
+                i * 40                   // Longitud
+            ));
         }
-        this.curve = new THREE.CatmullRomCurve3(this.points);
-    }
 
-    createMesh() {
-        // TubeGeometry sigue la curva perfectamente
-        const geometry = new THREE.TubeGeometry(this.curve, this.segments, this.width / 2, 8, false);
-        const material = new THREE.MeshStandardMaterial({ 
-            color: 0x333333, 
-            flatShading: true 
-        });
+        this.curve = new THREE.CatmullRomCurve3(points);
+
+        // Creamos el perfil de la carretera (un rectángulo muy delgado/plano)
+        const shape = new THREE.Shape();
+        shape.moveTo(-this.width / 2, 0);
+        shape.lineTo(this.width / 2, 0);
+        shape.lineTo(this.width / 2, 0.2); // Un poco de grosor para que no desaparezca
+        shape.lineTo(-this.width / 2, 0.2);
+        shape.lineTo(-this.width / 2, 0);
+
+        const extrudeSettings = {
+            steps: 400,            // Resolución a lo largo del camino
+            bevelEnabled: false,
+            extrudePath: this.curve
+        };
+
+        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
         
+        // Material de asfalto con texturizado simple
+        const material = new THREE.MeshStandardMaterial({ 
+            color: 0x222222, 
+            roughness: 0.8 
+        });
+
         this.mesh = new THREE.Mesh(geometry, material);
         this.scene.add(this.mesh);
 
-        // Línea central
-        const lineGeom = new THREE.TubeGeometry(this.curve, this.segments, 0.2, 4, false);
-        const lineMat = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-        const lineMesh = new THREE.Mesh(lineGeom, lineMat);
-        lineMesh.position.y += 0.1; 
+        // Añadir línea central (segmentada visualmente)
+        this.addCenterLine();
+    }
+
+    addCenterLine() {
+        // Creamos una línea amarilla que sigue el mismo camino un poco más arriba
+        const lineShape = new THREE.Shape();
+        lineShape.moveTo(-0.2, 0);
+        lineShape.lineTo(0.2, 0);
+        lineShape.lineTo(0.2, 0.05);
+        lineShape.lineTo(-0.2, 0.05);
+
+        const lineGeometry = new THREE.ExtrudeGeometry(lineShape, {
+            steps: 400,
+            bevelEnabled: false,
+            extrudePath: this.curve
+        });
+
+        const lineMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+        const lineMesh = new THREE.Mesh(lineGeometry, lineMaterial);
+        lineMesh.position.y = 0.25; // Justo encima del asfalto
         this.scene.add(lineMesh);
     }
-
-    // Retorna la posición y dirección en un punto T (0 a 1)
-    getPointAt(t) {
-        return this.curve.getPointAt(t % 1);
-    }
 }
-
