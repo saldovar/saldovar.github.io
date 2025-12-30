@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Drive - Procedural Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+</head>
+<body>
+    <div id="ui-container">
+        <div id="stats">Velocidad: <span id="speed-val">0</span> km/h</div>
+        
+        <div id="controls-panel">
+            <input type="number" id="seed-input" placeholder="Seed (ej: 1234)">
+            <input type="text" id="yt-input" placeholder="Link de YouTube">
+            <button id="btn-load-yt">Cargar YT</button>
+            <div class="file-input-wrapper">
+                <label for="local-audio">Cargar MP3 Local</label>
+                <input type="file" id="local-audio" accept="audio/*">
+            </div>
+            <div class="volume-container">
+                <span>Vol:</span>
+                <input type="range" id="vol-slider" min="0" max="100" value="50">
+            </div>
+        </div>
+    </div>
+
+    <div id="mobile-controls" class="hidden">
+        <div class="control-group left">
+            <button id="btn-left" class="joy-btn">L</button>
+            <button id="btn-right" class="joy-btn">R</button>
+        </div>
+        <div class="control-group right">
+            <button id="btn-up" class="joy-btn">ACCEL</button>
+            <button id="btn-down" class="joy-btn">BRAKE</button>
+        </div>
+    </div>
+
+    <div id="youtube-player"></div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="musicYT.js"></script>
+    <script src="musicLocal.js"></script>
+    <script src="map.js"></script>
+    <script src="car.js"></script>
+    <script src="camera.js"></script>
+    <script src="ui.js"></script>
+    <script src="game.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</body>
+</html>
