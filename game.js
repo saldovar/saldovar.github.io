@@ -5,13 +5,14 @@ const speedText = document.getElementById('speed-val');
 const car = new Car();
 const map = new MapGenerator();
 const camera = new Camera();
+const decoration = new WorldDecoration(map);
+const particles = new ParticleSystem();
 
 function init() {
     window.addEventListener('resize', resize);
     resize();
     UI.init(car, map);
     
-    // Teclado PC
     window.addEventListener('keydown', (e) => handleKey(e, true));
     window.addEventListener('keyup', (e) => handleKey(e, false));
 
@@ -19,10 +20,11 @@ function init() {
 }
 
 function handleKey(e, isPressed) {
-    if (e.key.toLowerCase() === 'w') car.controls.up = isPressed;
-    if (e.key.toLowerCase() === 's') car.controls.down = isPressed;
-    if (e.key.toLowerCase() === 'a') car.controls.left = isPressed;
-    if (e.key.toLowerCase() === 'd') car.controls.right = isPressed;
+    const key = e.key.toLowerCase();
+    if (key === 'w') car.controls.up = isPressed;
+    if (key === 's') car.controls.down = isPressed;
+    if (key === 'a') car.controls.left = isPressed;
+    if (key === 'd') car.controls.right = isPressed;
 }
 
 function resize() {
@@ -31,17 +33,30 @@ function resize() {
 }
 
 function loop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    // 1. Actualización
     car.update(map);
     camera.follow(car.x, car.y, canvas.width, canvas.height);
-    
+
+    // Lógica de partículas: si el auto se mueve en tierra o gira rápido
+    const currentTile = map.getTileAt(car.x, car.y);
+    if (Math.abs(car.speed) > 2) {
+        if (currentTile.type === 'DIRT' || currentTile.type === 'GRASS') {
+            particles.emit(car.x, car.y, currentTile.type === 'DIRT' ? '#8b5a2b' : '#3e5e3e');
+        }
+    }
+
+    // 2. Dibujado (EL ORDEN IMPORTA)
+    ctx.fillStyle = "#111"; // Fondo por si falla algo
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     map.draw(ctx, camera, canvas.width, canvas.height);
+    particles.draw(ctx, camera);
+    decoration.draw(ctx, camera, canvas.width, canvas.height);
     car.draw(ctx, camera);
 
     speedText.innerText = Math.abs(Math.round(car.speed * 20));
-    
     requestAnimationFrame(loop);
 }
 
 init();
+
