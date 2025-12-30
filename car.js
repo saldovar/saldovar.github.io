@@ -1,60 +1,50 @@
-class Car {
-    constructor() {
-        this.x = 0;
-        this.y = 0;
-        this.angle = 0;
-        this.speed = 0;
-        this.maxSpeed = 8;
-        this.accel = 0.2;
-        this.friction = 0.98;
-        this.turnSpeed = 0.05;
-        this.width = 40;
-        this.height = 20;
+import * as THREE from 'three';
+
+export class Car {
+    constructor(scene) {
+        this.group = new THREE.Group();
         
-        this.controls = { up: false, down: false, left: false, right: false };
+        // Carrocería simple
+        const body = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 1, 4),
+            new THREE.MeshStandardMaterial({ color: 0xff0000 })
+        );
+        body.position.y = 0.5;
+        this.group.add(body);
+
+        // Techo
+        const roof = new THREE.Mesh(
+            new THREE.BoxGeometry(1.8, 0.8, 2),
+            new THREE.MeshStandardMaterial({ color: 0xffffff })
+        );
+        roof.position.y = 1.3;
+        this.group.add(roof);
+
+        scene.add(this.group);
+
+        this.speed = 0;
+        this.maxSpeed = 1.5;
+        this.acceleration = 0.01;
+        this.friction = 0.96;
+        this.rotationSpeed = 0.04;
     }
 
-    update(map) {
-        const tile = map.getTileAt(this.x, this.y);
-        const currentMaxSpeed = this.maxSpeed * (tile.speedMult || 0.1);
+    update(keys) {
+        // Controles de aceleración
+        if (keys.up) this.speed += this.acceleration;
+        if (keys.down) this.speed -= this.acceleration;
 
-        // Aceleración
-        if (this.controls.up) this.speed += this.accel;
-        if (this.controls.down) this.speed -= this.accel;
-
-        // Fricción e Inercia
         this.speed *= this.friction;
 
-        // Rotación suave basada en velocidad
-        if (Math.abs(this.speed) > 0.1) {
+        // Movimiento básico
+        this.group.translateZ(this.speed);
+
+        // Rotación
+        if (Math.abs(this.speed) > 0.01) {
             const dir = this.speed > 0 ? 1 : -1;
-            if (this.controls.left) this.angle -= this.turnSpeed * (this.speed / 5) * dir;
-            if (this.controls.right) this.angle += this.turnSpeed * (this.speed / 5) * dir;
+            if (keys.left) this.group.rotation.y += this.rotationSpeed * dir;
+            if (keys.right) this.group.rotation.y -= this.rotationSpeed * dir;
         }
-
-        // Límites
-        if (this.speed > currentMaxSpeed) this.speed = currentMaxSpeed;
-        if (this.speed < -currentMaxSpeed / 2) this.speed = -currentMaxSpeed / 2;
-
-        // Movimiento
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-    }
-
-    draw(ctx, camera) {
-        ctx.save();
-        ctx.translate(this.x - camera.x, this.y - camera.y);
-        ctx.rotate(this.angle);
-        
-        // Cuerpo del auto
-        ctx.fillStyle = "#ff3300";
-        ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height);
-        
-        // Luces (delantera)
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(this.width/2 - 5, -this.height/2, 5, 5);
-        ctx.fillRect(this.width/2 - 5, this.height/2 - 5, 5, 5);
-        
-        ctx.restore();
     }
 }
+
