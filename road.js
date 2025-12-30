@@ -3,71 +3,64 @@ import * as THREE from 'three';
 export class Road {
     constructor(scene) {
         this.scene = scene;
-        this.curve = null;
-        this.width = 12; // Ancho de la carretera
-        
-        this.generateRoad();
+        this.width = 10;
+        this.length = 10000; // Longitud total
+        this.curve = this.createCurve();
+        this.createMesh();
     }
 
-    generateRoad() {
+    createCurve() {
         const points = [];
-        // Generamos 200 puntos para un viaje largo y suave
         for (let i = 0; i < 200; i++) {
             points.push(new THREE.Vector3(
-                Math.sin(i * 0.15) * 15, // Curvas suaves
-                Math.cos(i * 0.1) * 3,   // Altibajos suaves
-                i * 40                   // Longitud
+                Math.sin(i * 0.2) * 20, // Curvas laterales
+                Math.cos(i * 0.1) * 5,  // Subidas y bajadas
+                i * 50                  // Avance constante
             ));
         }
+        return new THREE.CatmullRomCurve3(points);
+    }
 
-        this.curve = new THREE.CatmullRomCurve3(points);
-
-        // Creamos el perfil de la carretera (un rectángulo muy delgado/plano)
-        const shape = new THREE.Shape();
-        shape.moveTo(-this.width / 2, 0);
-        shape.lineTo(this.width / 2, 0);
-        shape.lineTo(this.width / 2, 0.2); // Un poco de grosor para que no desaparezca
-        shape.lineTo(-this.width / 2, 0.2);
-        shape.lineTo(-this.width / 2, 0);
-
-        const extrudeSettings = {
-            steps: 400,            // Resolución a lo largo del camino
-            bevelEnabled: false,
-            extrudePath: this.curve
-        };
-
-        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    createMesh() {
+        // Creamos una cinta plana siguiendo la curva
+        const segments = 400;
+        const geometry = new THREE.PlaneGeometry(this.width, this.length, 1, segments);
         
-        // Material de asfalto con texturizado simple
+        // Modificamos los vértices del plano para que sigan la curva
+        const pos = geometry.attributes.position;
+        for (let i = 0; i <= segments; i++) {
+            const t = i / segments;
+            const point = this.curve.getPointAt(t);
+            const tangent = this.curve.getTangentAt(t);
+            const normal = new THREE.Vector3(0, 1, 0).cross(tangent).normalize();
+
+            // Vértice izquierdo
+            pos.setXYZ(i * 2, point.x + normal.x * (this.width/2), point.y, point.z + normal.z * (this.width/2));
+            // Vértice derecho
+            pos.setXYZ(i * 2 + 1, point.x - normal.x * (this.width/2), point.y, point.z - normal.z * (this.width/2));
+        }
+
         const material = new THREE.MeshStandardMaterial({ 
-            color: 0x222222, 
-            roughness: 0.8 
+            color: 0x333333, 
+            side: THREE.DoubleSide,
+            flatShading: true 
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh.rotation.y = Math.PI; // Corregir orientación
         this.scene.add(this.mesh);
 
-        // Añadir línea central (segmentada visualmente)
-        this.addCenterLine();
-    }
-
-    addCenterLine() {
-        // Creamos una línea amarilla que sigue el mismo camino un poco más arriba
-        const lineShape = new THREE.Shape();
-        lineShape.moveTo(-0.2, 0);
-        lineShape.lineTo(0.2, 0);
-        lineShape.lineTo(0.2, 0.05);
-        lineShape.lineTo(-0.2, 0.05);
-
-        const lineGeometry = new THREE.ExtrudeGeometry(lineShape, {
-            steps: 400,
-            bevelEnabled: false,
-            extrudePath: this.curve
-        });
-
-        const lineMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-        const lineMesh = new THREE.Mesh(lineGeometry, lineMaterial);
-        lineMesh.position.y = 0.25; // Justo encima del asfalto
+        // Línea central amarilla
+        const lineGeom = new THREE.PlaneGeometry(0.4, this.length, 1, segments);
+        const linePos = lineGeom.attributes.position;
+        for (let i = 0; i <= segments; i++) {
+            const t = i / segments;
+            const point = this.curve.getPointAt(t);
+            linePos.setXYZ(i * 2, point.x, point.y + 0.1, point.z);
+            linePos.setXYZ(i * 2 + 1, point.x, point.y + 0.1, point.z);
+        }
+        const lineMat = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+        const lineMesh = new THREE.Mesh(lineGeom, lineMat);
         this.scene.add(lineMesh);
     }
 }
