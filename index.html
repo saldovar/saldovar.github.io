@@ -479,6 +479,191 @@
 
   .sug-detail strong { color: var(--accent2); }
 
+
+  /* ── TAB NAVIGATION ── */
+  .tab-nav {
+    max-width: 860px;
+    margin: 0 auto 24px;
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+
+  .tab-btn {
+    padding: 10px 22px 12px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: contents; }
+
+  /* Colecta tab pane needs block not contents */
+  .tab-pane.colecta-pane { display: none; }
+  .tab-pane.colecta-pane.active { display: block; }
+
+  /* ── COLECTA TAB STYLES ── */
+  .colecta-container {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .dim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .dim-grid input {
+    text-align: center;
+  }
+
+  .dim-label {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  .vol-display {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+  }
+
+  .vol-display .vol-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .vol-display .vol-value {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  .colecta-result {
+    grid-column: 1 / -1;
+    display: none;
+  }
+
+  .colecta-result.visible { display: block; }
+
+  .colecta-result-inner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+  }
+
+  .tramo-badge {
+    display: inline-block;
+    background: rgba(255,224,51,0.1);
+    border: 1px solid rgba(255,224,51,0.3);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+
+  .colecta-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .colecta-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-top: 20px;
+  }
+
+  .colecta-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .colecta-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(42,42,58,0.4);
+    color: var(--muted);
+  }
+
+  .colecta-table tr.active-row td {
+    color: var(--text);
+    background: rgba(255,224,51,0.05);
+    font-weight: 700;
+  }
+
+  .colecta-table tr.active-row td:first-child {
+    border-left: 2px solid var(--accent);
+  }
+
+  .note-box {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(59,255,160,0.05);
+    border: 1px solid rgba(59,255,160,0.2);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #aaffe0;
+    line-height: 1.7;
+  }
+
+  .qty-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .qty-wrap input {
+    width: 80px;
+  }
+
   footer {
     max-width: 860px;
     margin: 32px auto 0;
@@ -510,6 +695,12 @@
   </div>
 </header>
 
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('costos')">💰 Costos ML</button>
+  <button class="tab-btn" onclick="switchTab('colecta')">🚚 Colecta Full</button>
+</div>
+
+<div class="tab-pane active" id="tab-costos">
 <div class="container">
 
   <!-- Input: Producto -->
@@ -627,6 +818,91 @@
   </div>
 
 </div>
+
+
+</div><!-- end .container -->
+</div><!-- end #tab-costos -->
+
+<!-- COLECTA TAB -->
+<div class="tab-pane colecta-pane" id="tab-colecta">
+<div class="colecta-container">
+
+  <!-- Dimensiones del producto -->
+  <div class="panel">
+    <div class="panel-title">Dimensiones del Producto</div>
+
+    <div class="field">
+      <label>Nombre (opcional)</label>
+      <input type="text" id="colectaName" placeholder="Ej: Caja teclados x10" />
+    </div>
+
+    <div class="field">
+      <label>Dimensiones del bulto (cm)</label>
+      <div class="dim-grid">
+        <div>
+          <input type="number" id="dimAncho" placeholder="0" min="0" />
+          <div class="dim-label">ANCHO</div>
+        </div>
+        <div>
+          <input type="number" id="dimAlto" placeholder="0" min="0" />
+          <div class="dim-label">ALTO</div>
+        </div>
+        <div>
+          <input type="number" id="dimProfundo" placeholder="0" min="0" />
+          <div class="dim-label">PROFUNDO</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Cantidad de bultos</label>
+      <div class="qty-wrap">
+        <input type="number" id="colectaCantidad" value="1" min="1" placeholder="1" />
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">bulto(s)</span>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calcularColecta()" style="margin-top:16px">↳ Calcular Costo Colecta</button>
+
+    <div class="vol-display" id="volDisplay" style="display:none">
+      <span class="vol-label">Volumen total</span>
+      <span class="vol-value" id="volValue">— m³</span>
+    </div>
+
+  </div>
+
+  <!-- Info / tabla referencia -->
+  <div class="panel">
+    <div class="panel-title">Tabla de Tramos</div>
+    <table class="colecta-table" id="colectaRefTable">
+      <thead>
+        <tr>
+          <th>Volumen</th>
+          <th>Costo colecta</th>
+        </tr>
+      </thead>
+      <tbody id="colectaTableBody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-family:var(--font-mono);font-size:9px;color:var(--muted);line-height:1.6">
+      Fuente: ML Argentina · ayuda/costos-colecta-5-20-km
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="colecta-result" id="colectaResult">
+    <div class="colecta-result-inner">
+      <div class="panel-title">Resultado colecta <span id="colectaProductLabel" style="color:var(--accent);margin-left:6px;text-transform:none;letter-spacing:0;font-size:11px;font-family:'Space Mono'"></span></div>
+
+      <div id="tramoBadge" class="tramo-badge"></div>
+
+      <div class="colecta-cards" id="colectaCards"></div>
+
+      <div class="note-box" id="colectaNoteBox"></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end #tab-colecta -->
 
 <footer>
   Basado en tarifas ML Argentina vigentes · Siempre verificar en mercadolibre.com.ar/simulador-de-costos
@@ -957,6 +1233,144 @@
 
     document.getElementById('suggestionRows').innerHTML = html;
   }
+
+  // ── TAB SWITCHING ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'colecta') renderColectaTable(-1);
+  }
+
+  // ── COLECTA DATA ──
+  const COLECTA_TRAMOS = [
+    { label: 'Hasta 0,05 m³',    max: 0.05,  min_c: 10813,  max_c: 10813 },
+    { label: '0,05 – 0,10 m³',   max: 0.10,  min_c: 10813,  max_c: 21626 },
+    { label: '0,10 – 0,20 m³',   max: 0.20,  min_c: 14417,  max_c: 28835 },
+    { label: '0,20 – 0,30 m³',   max: 0.30,  min_c: 23592,  max_c: 35388 },
+    { label: '0,30 – 0,50 m³',   max: 0.50,  min_c: 22789,  max_c: 37982 },
+    { label: '0,50 – 1 m³',      max: 1.00,  min_c: 22923,  max_c: 45846 },
+    { label: '1 – 2 m³',         max: 2.00,  min_c: 27759,  max_c: 55518 },
+    { label: '2 – 5 m³',         max: 5.00,  min_c: 42538,  max_c: 106345 },
+    { label: '5 – 10 m³',        max: 10.00, min_c: 90045,  max_c: 180090 },
+    { label: '10 – 20 m³',       max: 20.00, min_c: 161620, max_c: 323240 },
+    { label: '20 – 35 m³',       max: 35.00, min_c: 251500, max_c: 440125 },
+    { label: '35 – 50 m³',       max: 50.00, min_c: 430360, max_c: 614800 },
+  ];
+
+  function getColectaTramo(vol) {
+    for (let i = 0; i < COLECTA_TRAMOS.length; i++) {
+      if (vol <= COLECTA_TRAMOS[i].max) return i;
+    }
+    return COLECTA_TRAMOS.length - 1;
+  }
+
+  function renderColectaTable(activeIdx) {
+    const tbody = document.getElementById('colectaTableBody');
+    tbody.innerHTML = COLECTA_TRAMOS.map((t, i) => {
+      const costoStr = t.min_c === t.max_c
+        ? fmt(t.min_c)
+        : fmt(t.min_c) + ' – ' + fmt(t.max_c);
+      return `<tr class="${i === activeIdx ? 'active-row' : ''}">
+        <td>${t.label}</td>
+        <td>${costoStr}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Live volume update as user types
+  ['dimAncho','dimAlto','dimProfundo','colectaCantidad'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateVolDisplay);
+  });
+
+  function updateVolDisplay() {
+    const a = parseFloat(document.getElementById('dimAncho').value) || 0;
+    const h = parseFloat(document.getElementById('dimAlto').value) || 0;
+    const p = parseFloat(document.getElementById('dimProfundo').value) || 0;
+    const q = parseFloat(document.getElementById('colectaCantidad').value) || 1;
+    const volDisplay = document.getElementById('volDisplay');
+    if (a > 0 && h > 0 && p > 0) {
+      const vol = (a / 100) * (h / 100) * (p / 100) * q;
+      document.getElementById('volValue').textContent = vol.toFixed(4) + ' m³';
+      volDisplay.style.display = 'flex';
+    } else {
+      volDisplay.style.display = 'none';
+    }
+  }
+
+  function calcularColecta() {
+    const a = parseFloat(document.getElementById('dimAncho').value) || 0;
+    const h = parseFloat(document.getElementById('dimAlto').value) || 0;
+    const p = parseFloat(document.getElementById('dimProfundo').value) || 0;
+    const q = Math.max(1, parseFloat(document.getElementById('colectaCantidad').value) || 1);
+    const nombre = document.getElementById('colectaName').value || 'Envío Full';
+
+    if (a <= 0 || h <= 0 || p <= 0) {
+      alert('Ingresá los tres valores de dimensiones (ancho, alto y profundo).');
+      return;
+    }
+
+    const volUnitario = (a / 100) * (h / 100) * (p / 100);
+    const volTotal = volUnitario * q;
+    const tramoIdx = getColectaTramo(volTotal);
+    const tramo = COLECTA_TRAMOS[tramoIdx];
+
+    // Interpolación lineal dentro del tramo para estimar costo
+    // Usamos el rango del tramo para dar un valor estimado proporcional
+    const tramoMin = tramoIdx === 0 ? 0 : COLECTA_TRAMOS[tramoIdx - 1].max;
+    const tramoMax = tramo.max;
+    const ratio = tramoMax === tramoMin ? 0.5 : Math.min((volTotal - tramoMin) / (tramoMax - tramoMin), 1);
+    const costoEstimado = tramo.min_c + ratio * (tramo.max_c - tramo.min_c);
+
+    // Render
+    document.getElementById('colectaProductLabel').textContent = '→ ' + nombre;
+    document.getElementById('tramoBadge').textContent = 'Tramo: ' + tramo.label;
+
+    const cards = document.getElementById('colectaCards');
+    cards.innerHTML = `
+      <div class="result-card highlight">
+        <span class="rc-label">Volumen unitario</span>
+        <span class="rc-value yellow">${volUnitario.toFixed(4)} m³</span>
+        <span class="rc-sub">${a}×${h}×${p} cm</span>
+      </div>
+      <div class="result-card highlight">
+        <span class="rc-label">Volumen total (×${q})</span>
+        <span class="rc-value green">${volTotal.toFixed(4)} m³</span>
+        <span class="rc-sub">${q} bulto${q > 1 ? 's' : ''}</span>
+      </div>
+      <div class="result-card" style="border-color:var(--accent);background:rgba(255,224,51,0.05)">
+        <span class="rc-label">Costo mínimo</span>
+        <span class="rc-value yellow">${fmt(tramo.min_c)}</span>
+        <span class="rc-sub">Extremo inferior del tramo</span>
+      </div>
+      <div class="result-card" style="border-color:var(--accent);background:rgba(255,224,51,0.05)">
+        <span class="rc-label">Costo máximo</span>
+        <span class="rc-value yellow">${fmt(tramo.max_c)}</span>
+        <span class="rc-sub">Extremo superior del tramo</span>
+      </div>
+      <div class="result-card" style="border-color:var(--accent2);background:rgba(59,255,160,0.07)">
+        <span class="rc-label">★ Estimado (interpolado)</span>
+        <span class="rc-value green">${fmt(costoEstimado)}</span>
+        <span class="rc-sub">Aprox. según posición en tramo</span>
+      </div>
+    `;
+
+    renderColectaTable(tramoIdx);
+
+    document.getElementById('colectaNoteBox').innerHTML = `
+      ✓ Volumen calculado: <strong>${volTotal.toFixed(4)} m³</strong> — cae en el tramo <strong>${tramo.label}</strong>.<br>
+      ML cobra entre <strong>${fmt(tramo.min_c)}</strong> y <strong>${fmt(tramo.max_c)}</strong> por colecta en este tramo (5–20 km).<br>
+      El estimado interpolado es <strong>${fmt(costoEstimado)}</strong>. Verificá el costo exacto en el simulador oficial de ML.
+    `;
+
+    document.getElementById('colectaResult').classList.add('visible');
+    document.getElementById('colectaResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Init table on load
+  renderColectaTable(-1);
+
 </script>
 </body>
   </html>
