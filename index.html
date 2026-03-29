@@ -717,6 +717,114 @@
 
   .cat-sub { font-size:11px; color:var(--muted); font-family:var(--font-mono); margin-bottom:18px; }
 
+
+  /* ── ROADMAP TAB ── */
+  .roadmap-pane { display: none; }
+  .roadmap-pane.active { display: block; }
+
+  .rm-container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .rm-sub { font-size:10px; color:var(--muted); font-family:var(--font-mono); margin-bottom:20px; }
+
+  .rm-tip-box {
+    display:none; position:fixed; z-index:9999;
+    background:#1a1a2e; border:1px solid var(--accent);
+    border-radius:8px; padding:10px 14px; width:240px;
+    font-size:11px; font-family:var(--font-mono); color:var(--text);
+    line-height:1.6; box-shadow:0 8px 32px rgba(0,0,0,0.7);
+    pointer-events:none;
+  }
+  .rm-tip-box .rm-tip-title { color:var(--accent); font-weight:700; font-size:12px; margin-bottom:4px; display:block; }
+  .rm-tip-box .rm-tip-body { color:#c0c0d8; }
+
+  .rm-progress-wrap { margin-bottom:20px; }
+  .rm-progress-label { display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-bottom:6px; }
+  .rm-progress-bar { height:6px; background:var(--surface2); border-radius:3px; border:1px solid var(--border); overflow:hidden; }
+  .rm-progress-fill { height:100%; background:linear-gradient(90deg,#5b8fff,var(--accent2)); border-radius:3px; width:0%; transition:width .5s; }
+  .rm-done-counter { font-family:var(--font-mono); font-size:11px; color:var(--accent2); }
+
+  .rm-semana { margin-bottom:12px; }
+  .rm-semana-header {
+    display:flex; align-items:center; gap:12px;
+    padding:10px 16px; border-radius:8px 8px 0 0;
+    border:1px solid var(--border); border-bottom:none;
+    cursor:pointer; user-select:none;
+  }
+  .rm-semana-num { font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; opacity:.7; min-width:60px; }
+  .rm-semana-title { font-size:14px; font-weight:700; flex:1; }
+  .rm-semana-badge { font-family:var(--font-mono); font-size:9px; padding:3px 10px; border-radius:12px; font-weight:700; letter-spacing:.5px; white-space:nowrap; }
+  .rm-chevron { color:var(--muted); font-size:12px; transition:transform .2s; margin-left:4px; }
+
+  .rm-semana-body {
+    border:1px solid var(--border); border-top:none; border-radius:0 0 8px 8px;
+    background:var(--surface); overflow:hidden;
+    max-height:0; transition:max-height .35s ease;
+  }
+  .rm-semana-body.open { max-height:3000px; }
+
+  .rm-objetivo { padding:10px 16px; font-size:11px; font-family:var(--font-mono); border-bottom:1px solid var(--border); line-height:1.6; }
+
+  .rm-tareas { padding:12px 16px; display:flex; flex-direction:column; gap:8px; }
+  .rm-tarea {
+    display:flex; align-items:flex-start; gap:10px;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:8px; padding:10px 12px; transition:border-color .15s; cursor:pointer;
+  }
+  .rm-tarea:hover { border-color:rgba(255,224,51,0.3); }
+  .rm-tarea.done { opacity:.5; border-style:dashed; }
+  .rm-tarea.done .rm-tarea-title { text-decoration:line-through; }
+  .rm-tarea-check { width:18px; height:18px; border:2px solid var(--border); border-radius:4px; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:11px; transition:all .15s; }
+  .rm-tarea.done .rm-tarea-check { background:var(--accent2); border-color:var(--accent2); color:#000; }
+  .rm-tarea-content { flex:1; }
+  .rm-tarea-title { font-size:12px; font-weight:600; color:var(--text); margin-bottom:3px; }
+  .rm-tarea-detail { font-size:10px; color:var(--muted); font-family:var(--font-mono); line-height:1.6; }
+  .rm-tarea-tag { font-family:var(--font-mono); font-size:8px; padding:2px 8px; border-radius:10px; font-weight:700; letter-spacing:.5px; white-space:nowrap; flex-shrink:0; margin-top:2px; align-self:flex-start; }
+
+  .rm-entregable { margin:0 16px 14px; padding:10px 14px; border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.6; background:rgba(255,224,51,.06); border:1px solid rgba(255,224,51,.2); color:var(--accent); }
+  .rm-entregable::before { content:"↳ ENTREGABLE: "; opacity:.6; font-weight:700; }
+
+  .rm-kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:0 16px 14px; }
+  .rm-kpi { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; }
+  .rm-kpi-val { font-family:var(--font-mono); font-size:16px; font-weight:800; line-height:1; margin-bottom:3px; }
+  .rm-kpi-lbl { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  /* Semana colors - scoped to rm- */
+  .rm-s1 .rm-semana-header { border-color:rgba(91,143,255,.3); background:rgba(91,143,255,.05); }
+  .rm-s1 .rm-semana-title { color:#5b8fff; }
+  .rm-s1 .rm-semana-badge { background:rgba(91,143,255,.15); color:#5b8fff; border:1px solid rgba(91,143,255,.3); }
+  .rm-s1 .rm-objetivo { background:rgba(91,143,255,.04); color:#99b8ff; }
+
+  .rm-s2 .rm-semana-header { border-color:rgba(255,224,51,.3); background:rgba(255,224,51,.05); }
+  .rm-s2 .rm-semana-title { color:var(--accent); }
+  .rm-s2 .rm-semana-badge { background:rgba(255,224,51,.15); color:var(--accent); border:1px solid rgba(255,224,51,.3); }
+  .rm-s2 .rm-objetivo { background:rgba(255,224,51,.04); color:#ffe580; }
+
+  .rm-s3 .rm-semana-header { border-color:rgba(255,140,0,.3); background:rgba(255,140,0,.05); }
+  .rm-s3 .rm-semana-title { color:var(--orange); }
+  .rm-s3 .rm-semana-badge { background:rgba(255,140,0,.15); color:var(--orange); border:1px solid rgba(255,140,0,.3); }
+  .rm-s3 .rm-objetivo { background:rgba(255,140,0,.04); color:#ffcc80; }
+
+  .rm-s4 .rm-semana-header { border-color:rgba(59,255,160,.3); background:rgba(59,255,160,.05); }
+  .rm-s4 .rm-semana-title { color:var(--accent2); }
+  .rm-s4 .rm-semana-badge { background:rgba(59,255,160,.15); color:var(--accent2); border:1px solid rgba(59,255,160,.3); }
+  .rm-s4 .rm-objetivo { background:rgba(59,255,160,.04); color:#a0ffe0; }
+
+  /* Tags */
+  .rm-tag-cuenta { background:rgba(91,143,255,.15); color:#5b8fff; border:1px solid rgba(91,143,255,.3); }
+  .rm-tag-pub { background:rgba(167,139,250,.15); color:#a78bfa; border:1px solid rgba(167,139,250,.3); }
+  .rm-tag-ads { background:rgba(255,224,51,.15); color:var(--accent); border:1px solid rgba(255,224,51,.3); }
+  .rm-tag-logis { background:rgba(255,140,0,.15); color:var(--orange); border:1px solid rgba(255,140,0,.3); }
+  .rm-tag-rep { background:rgba(59,255,160,.15); color:var(--accent2); border:1px solid rgba(59,255,160,.3); }
+  .rm-tag-escala { background:rgba(255,69,69,.15); color:var(--red); border:1px solid rgba(255,69,69,.3); }
+
+  .rm-ttrig {
+    border-bottom:1px dashed var(--accent);
+    color:var(--accent); cursor:help; font-weight:700;
+  }
+
   footer {
     max-width: 860px;
     margin: 32px auto 0;
@@ -752,6 +860,7 @@
   <button class="tab-btn active" onclick="switchTab('costos')">💰 Costos ML</button>
   <button class="tab-btn" onclick="switchTab('colecta')">🚚 Colecta Full</button>
   <button class="tab-btn" onclick="switchTab('catalogo')">📦 Mapa Catálogo</button>
+  <button class="tab-btn" onclick="switchTab('roadmap')">🗓 Hoja de Ruta</button>
 </div>
 
 <div class="tab-pane active" id="tab-costos">
@@ -1023,6 +1132,280 @@
 
 </div>
 </div><!-- end #tab-catalogo -->
+
+
+<!-- ROADMAP TAB -->
+<div class="tab-pane roadmap-pane" id="tab-roadmap">
+<div class="rm-container">
+
+  <!-- Global tooltip -->
+  <div class="rm-tip-box" id="rmGlobalTip">
+    <span class="rm-tip-title" id="rmTipTitle"></span>
+    <span class="rm-tip-body" id="rmTipBody"></span>
+  </div>
+
+  <div class="rm-sub">30 días · De cero a operación profesional · Clic para marcar tareas ✓ · Hover en términos <span style="color:var(--accent);border-bottom:1px dashed var(--accent)">amarillos</span> para definición</div>
+
+  <div class="rm-progress-wrap">
+    <div class="rm-progress-label">
+      <span>Progreso general</span>
+      <span class="rm-done-counter" id="rmDoneCounter">0 / 20 tareas</span>
+    </div>
+    <div class="rm-progress-bar"><div class="rm-progress-fill" id="rmProgressFill"></div></div>
+  </div>
+
+  <!-- SEMANA 1 -->
+  <div class="rm-semana rm-s1">
+    <div class="rm-semana-header" onclick="rmToggle(this)">
+      <span class="rm-semana-num">Semana 1</span>
+      <span class="rm-semana-title">Base operativa</span>
+      <span class="rm-semana-badge">Días 1–7</span>
+      <span class="rm-chevron">▼</span>
+    </div>
+    <div class="rm-semana-body open">
+      <div class="rm-objetivo"><strong>Objetivo:</strong> Cuenta empresa activa, <span class="rm-ttrig" data-rmkey="perfil">perfil</span> al 100%, primeros 10 productos publicados y funcionando. No se sale de esta semana sin tener una publicación real visible en ML.</div>
+      <div class="rm-tareas">
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Crear cuenta empresa en ML</div>
+            <div class="rm-tarea-detail"><span class="rm-ttrig" data-rmkey="cuit">CUIT</span> · Razón social · Domicilio fiscal · <span class="rm-ttrig" data-rmkey="condicion_afip">Condición AFIP</span> (Monotributo o RI)<br>Vincular <span class="rm-ttrig" data-rmkey="cbu">CBU</span> de la empresa a <span class="rm-ttrig" data-rmkey="mercadopago">Mercado Pago</span></div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-cuenta">CUENTA</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Configurar perfil público completo</div>
+            <div class="rm-tarea-detail">Logo Portal Tech · Descripción · <span class="rm-ttrig" data-rmkey="politica_dev">Política de devolución</span> · Horario de atención · 5 <span class="rm-ttrig" data-rmkey="preguntas_freq">preguntas frecuentes</span> pre-armadas</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-cuenta">CUENTA</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Publicar los 10 productos sobre $60.000 en <span class="rm-ttrig" data-rmkey="premium">Premium</span></div>
+            <div class="rm-tarea-detail">Sin <span class="rm-ttrig" data-rmkey="cargo_fijo">cargo fijo</span> · Fotos con fondo blanco · <span class="rm-ttrig" data-rmkey="ficha_tecnica">Ficha técnica</span> completa<br>Título: Tipo + Marca + Modelo + Spec (130 caracteres)</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-pub">PUBLICACIÓN</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Verificar precios vs competencia en ML</div>
+            <div class="rm-tarea-detail">Buscar los 10 productos en ML · Registrar precio de los primeros 3 resultados<br>Ajustar si la diferencia supera 5% · Fijarse si usan <span class="rm-ttrig" data-rmkey="envio_gratis">envío gratis</span></div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-pub">PUBLICACIÓN</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Definir proceso diario de operaciones</div>
+            <div class="rm-tarea-detail">¿Quién revisa ventas? ¿Quién empaca? ¿Quién despacha? Horario fijo: 10hs revisión · 12hs despacho<br>Esto protege la <span class="rm-ttrig" data-rmkey="reputacion">reputación</span> desde el día 1</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-rep">REPUTACIÓN</span>
+        </div>
+
+      </div>
+      <div class="rm-kpis">
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:#5b8fff">10</div><div class="rm-kpi-lbl">Productos live</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:#5b8fff">100%</div><div class="rm-kpi-lbl">Perfil completo</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:#5b8fff">0</div><div class="rm-kpi-lbl">Reclamos meta</div></div>
+      </div>
+      <div class="rm-entregable">Tienda visible, perfil al 100%, 10 publicaciones Premium zona verde activas.</div>
+    </div>
+  </div>
+
+  <!-- SEMANA 2 -->
+  <div class="rm-semana rm-s2">
+    <div class="rm-semana-header" onclick="rmToggle(this)">
+      <span class="rm-semana-num">Semana 2</span>
+      <span class="rm-semana-title">Catálogo completo + Publicidad</span>
+      <span class="rm-semana-badge">Días 8–14</span>
+      <span class="rm-chevron">▼</span>
+    </div>
+    <div class="rm-semana-body">
+      <div class="rm-objetivo"><strong>Objetivo:</strong> Activar <span class="rm-ttrig" data-rmkey="product_ads">Product Ads</span> en los 5 productos estrella. Publicar los 9 restantes en <span class="rm-ttrig" data-rmkey="clasica">Clásica</span>. Primeras ventas reales y primeros datos de <span class="rm-ttrig" data-rmkey="acos">ACOS</span>.</div>
+      <div class="rm-tareas">
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Publicar 9 productos bajo $60.000 en <span class="rm-ttrig" data-rmkey="clasica">Clásica</span></div>
+            <div class="rm-tarea-detail"><span class="rm-ttrig" data-rmkey="comision">Comisión</span> 10% · Sin cuotas · Adaptador Nisuta $4.100 solo como parte de <span class="rm-ttrig" data-rmkey="combo">combo</span>, no individual<br>Webcam $59k: evaluar <span class="rm-ttrig" data-rmkey="premium">Premium</span> si la competencia la ofrece con cuotas</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-pub">PUBLICACIÓN</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Activar <span class="rm-ttrig" data-rmkey="product_ads">Product Ads</span> en 5 productos estrella</div>
+            <div class="rm-tarea-detail">Candidatos: DJI Avata · Nintendo Switch · Intel Ultra 7 · RAM DDR5 · Fuente 800W<br><span class="rm-ttrig" data-rmkey="budget_diario">Budget diario</span>: $3.000–$5.000 por producto · Modelo <span class="rm-ttrig" data-rmkey="cpc">CPC</span></div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-ads">ADS</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Armar al menos 2 <span class="rm-ttrig" data-rmkey="combo">combos</span> estratégicos</div>
+            <div class="rm-tarea-detail">Ejemplo: Teclado $50k + Mouse $33k + Adaptador $4.100 = $87.100 → supera $60k, sin <span class="rm-ttrig" data-rmkey="cargo_fijo">cargo fijo</span><br>Los combos elevan el <span class="rm-ttrig" data-rmkey="ticket_promedio">ticket promedio</span> y mejoran la <span class="rm-ttrig" data-rmkey="conversion">tasa de conversión</span></div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-pub">PUBLICACIÓN</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Monitorear <span class="rm-ttrig" data-rmkey="reputacion">reputación</span> diariamente</div>
+            <div class="rm-tarea-detail">Reclamos &lt;2% · Cancelaciones &lt;2% · <span class="rm-ttrig" data-rmkey="demora_despacho">Demoras de despacho</span> &lt;10%<br>Responder preguntas en menos de 2 horas</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-rep">REPUTACIÓN</span>
+        </div>
+
+      </div>
+      <div class="rm-kpis">
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--accent)">19</div><div class="rm-kpi-lbl">Productos live</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--accent)">5</div><div class="rm-kpi-lbl">Campañas Ads</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--accent)">2</div><div class="rm-kpi-lbl">Combos armados</div></div>
+      </div>
+      <div class="rm-entregable">Catálogo completo live. Ads activos. Primeros datos de ACOS disponibles.</div>
+    </div>
+  </div>
+
+  <!-- SEMANA 3 -->
+  <div class="rm-semana rm-s3">
+    <div class="rm-semana-header" onclick="rmToggle(this)">
+      <span class="rm-semana-num">Semana 3</span>
+      <span class="rm-semana-title">Optimización con datos reales</span>
+      <span class="rm-semana-badge">Días 15–21</span>
+      <span class="rm-chevron">▼</span>
+    </div>
+    <div class="rm-semana-body">
+      <div class="rm-objetivo"><strong>Objetivo:</strong> Usar los datos de las primeras 2 semanas para decidir. Escalar lo que funciona, pausar lo que no. <span class="rm-ttrig" data-rmkey="reputacion">Reputación</span> en verde consolidada.</div>
+      <div class="rm-tareas">
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Auditar <span class="rm-ttrig" data-rmkey="acos">ACOS</span> por producto</div>
+            <div class="rm-tarea-detail"><span class="rm-ttrig" data-rmkey="acos">ACOS</span> 5–12% → subir <span class="rm-ttrig" data-rmkey="budget_diario">budget diario</span> · <span class="rm-ttrig" data-rmkey="acos">ACOS</span> &gt;20% → bajar o pausar<br>Identificar palabras de búsqueda que generan clics sin venta</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-ads">ADS</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Revisar <span class="rm-ttrig" data-rmkey="conversion">tasa de conversión</span> por publicación</div>
+            <div class="rm-tarea-detail">Ver métricas en el <span class="rm-ttrig" data-rmkey="centro_vendedores">Centro de Vendedores</span><br>Muchas visitas + pocas ventas = problema de precio, fotos o <span class="rm-ttrig" data-rmkey="ficha_tecnica">ficha técnica</span></div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-pub">PUBLICACIÓN</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Identificar candidatos para <span class="rm-ttrig" data-rmkey="full">Full ML</span></div>
+            <div class="rm-tarea-detail">Productos con más ventas y margen suficiente para absorber el <span class="rm-ttrig" data-rmkey="fee_full">fee Full</span> (~2.5%)<br>Candidatos probables: Nintendo Switch · Intel Ultra 7 · RAM DDR5</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-logis">LOGÍSTICA</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Primer reporte de gestión para Portal Tech</div>
+            <div class="rm-tarea-detail">Ventas totales · <span class="rm-ttrig" data-rmkey="acos">ACOS</span> por campaña · Productos más visitados · <span class="rm-ttrig" data-rmkey="reputacion">Reputación</span> actual · Próximos pasos<br>Demuestra profesionalismo y genera confianza con el dueño</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-rep">REPUTACIÓN</span>
+        </div>
+
+      </div>
+      <div class="rm-kpis">
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--orange)">&lt;12%</div><div class="rm-kpi-lbl">ACOS objetivo</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--orange)">Verde</div><div class="rm-kpi-lbl">Reputación meta</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--orange)">1</div><div class="rm-kpi-lbl">Reporte entregado</div></div>
+      </div>
+      <div class="rm-entregable">Ads optimizados. Candidatos a Full identificados. Primer reporte de gestión presentado.</div>
+    </div>
+  </div>
+
+  <!-- SEMANA 4 -->
+  <div class="rm-semana rm-s4">
+    <div class="rm-semana-header" onclick="rmToggle(this)">
+      <span class="rm-semana-num">Semana 4</span>
+      <span class="rm-semana-title">Full ML y escala</span>
+      <span class="rm-semana-badge">Días 22–30</span>
+      <span class="rm-chevron">▼</span>
+    </div>
+    <div class="rm-semana-body">
+      <div class="rm-objetivo"><strong>Objetivo:</strong> Enviar stock de los top 3 a <span class="rm-ttrig" data-rmkey="full">Full ML</span>. Activar el sello <span class="rm-ttrig" data-rmkey="llega_manana">"Llega mañana"</span>. Escalar <span class="rm-ttrig" data-rmkey="product_ads">Ads</span> en lo que ya demostró funcionar. Tienda en régimen de crucero.</div>
+      <div class="rm-tareas">
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Enviar stock de top 3 al depósito <span class="rm-ttrig" data-rmkey="full">Full ML</span></div>
+            <div class="rm-tarea-detail">Calcular <span class="rm-ttrig" data-rmkey="colecta">costo de colecta</span> según volumen<br>Embalar correctamente · Generar orden de ingreso en el <span class="rm-ttrig" data-rmkey="centro_vendedores">Centro de Vendedores</span></div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-logis">LOGÍSTICA</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Verificar sello <span class="rm-ttrig" data-rmkey="llega_manana">"Llega mañana"</span> activo</div>
+            <div class="rm-tarea-detail">Buscar el producto en ML como comprador · Confirmar que aparece el sello<br>Comparar <span class="rm-ttrig" data-rmkey="posicionamiento">posicionamiento</span> antes y después de Full</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-logis">LOGÍSTICA</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Escalar <span class="rm-ttrig" data-rmkey="budget_diario">budget de Ads</span> x2 en los ganadores</div>
+            <div class="rm-tarea-detail">Productos con <span class="rm-ttrig" data-rmkey="acos">ACOS</span> &lt;10% y <span class="rm-ttrig" data-rmkey="full">Full</span> activo: duplicar <span class="rm-ttrig" data-rmkey="budget_diario">budget</span><br>El sello <span class="rm-ttrig" data-rmkey="llega_manana">"Llega mañana"</span> mejora la <span class="rm-ttrig" data-rmkey="conversion">conversión</span> → el Ads rinde más</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-ads">ADS</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Configurar <span class="rm-ttrig" data-rmkey="mi_pagina">Mi Página</span> con identidad Portal Tech</div>
+            <div class="rm-tarea-detail">Logo · Banner · Productos organizados por categoría propia<br>Para compradores que llegan al perfil desde una publicación</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-escala">ESCALA</span>
+        </div>
+
+        <div class="rm-tarea" onclick="rmToggleDone(this)">
+          <div class="rm-tarea-check"></div>
+          <div class="rm-tarea-content">
+            <div class="rm-tarea-title">Segundo reporte + plan Mes 2</div>
+            <div class="rm-tarea-detail">Resultados del mes 1 · Qué se escaló, qué se pausó · Proyección de ventas mes 2<br>Propuesta de nuevos productos según <span class="rm-ttrig" data-rmkey="rotacion">rotación</span> y margen</div>
+          </div>
+          <span class="rm-tarea-tag rm-tag-escala">ESCALA</span>
+        </div>
+
+      </div>
+      <div class="rm-kpis">
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--accent2)">3</div><div class="rm-kpi-lbl">Productos en Full</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--accent2)">2×</div><div class="rm-kpi-lbl">Budget Ads escalado</div></div>
+        <div class="rm-kpi"><div class="rm-kpi-val" style="color:var(--accent2)">Verde</div><div class="rm-kpi-lbl">Reputación al cierre</div></div>
+      </div>
+      <div class="rm-entregable">Full activo. "Llega mañana" visible. Tienda en modo profesional y escalable.</div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end #tab-roadmap -->
 
 <footer>
   Basado en tarifas ML Argentina vigentes · Siempre verificar en mercadolibre.com.ar/simulador-de-costos
@@ -1362,6 +1745,7 @@
     document.getElementById('tab-' + tab).classList.add('active');
     if (tab === 'colecta') renderColectaTable(-1);
     if (tab === 'catalogo') { catRender('todos'); catMostrarAlerta('todos'); }
+    if (tab === 'roadmap') { rmInit(); }
   }
 
   // ── COLECTA DATA ──
@@ -1577,6 +1961,111 @@
   }
 
   // Update switchTab to handle catalog
+
+
+  // ── ROADMAP ──
+  const RM_DEFS = {
+    acos: { title:"ACOS — Advertising Cost of Sales", body:"Porcentaje de cada venta que se fue en publicidad. Ej: vendés $100, gastaste $10 en Ads → ACOS 10%. Rango sano para gaming: 5%–12%." },
+    budget_diario: { title:"Budget diario", body:"Monto máximo que Mercado Ads puede gastar en clics por día. Cuando se agota, los anuncios se pausan hasta el día siguiente." },
+    cpc: { title:"CPC — Costo Por Clic", body:"Modelo de cobro donde solo pagás cuando alguien hace clic en tu publicación patrocinada. Si nadie clica, no se descuenta nada." },
+    product_ads: { title:"Product Ads", body:"Tipo de publicidad en ML que muestra tus productos destacados en los primeros resultados de búsqueda con la etiqueta 'Patrocinado'." },
+    full: { title:"Full ML", body:"Mandás tu stock al depósito de ML. Cuando alguien compra, ML empaca y despacha por vos. Activa el sello 'Llega mañana'." },
+    fee_full: { title:"Fee Full", body:"Cargo que cobra ML por guardar, embalar y despachar cada unidad desde su depósito. Aproximadamente 2.5% del precio de venta." },
+    llega_manana: { title:'"Llega mañana"', body:"Sello que aparece en publicaciones con Full activo. Es el que más confianza genera y puede triplicar las ventas vs. una publicación sin sello." },
+    colecta: { title:"Colecta Full", body:"Servicio donde ML retira el stock de tu depósito para llevarlo a su centro logístico. El costo varía por volumen." },
+    premium: { title:"Publicación Premium", body:"Comisión ~16.5% pero incluye cuotas sin interés hasta 12 meses y mayor visibilidad. Obligatoria para productos caros." },
+    clasica: { title:"Publicación Clásica", body:"Comisión ~10% sin cuotas. Mejor opción para productos bajo $60k para evitar el cargo fijo." },
+    cargo_fijo: { title:"Cargo fijo", body:"Monto adicional por unidad vendida en Premium bajo $60.000. Va de $1.115 (hasta $15k) a $4.000 ($33k–$60k). Arriba de $60k no aplica." },
+    comision: { title:"Comisión ML", body:"Porcentaje del precio de venta que se queda ML. Premium: ~16.5%. Clásica: ~10% (bajo $60k) o ~13% (sobre $60k)." },
+    conversion: { title:"Tasa de conversión", body:"Porcentaje de visitantes que efectivamente compran. El sello Full y las fotos profesionales la suben." },
+    reputacion: { title:"Reputación ML", body:"Puntaje según reclamos (<2%), cancelaciones (<2%) y demoras (<10%). Determina tu posición en los resultados de búsqueda." },
+    centro_vendedores: { title:"Centro de Vendedores", body:"Panel de control de ML desde donde se gestionan ventas, stock, preguntas, reclamos, métricas y campañas de Ads." },
+    ficha_tecnica: { title:"Ficha técnica", body:"Grilla de atributos del producto. Completarla toda mejora el posicionamiento en búsquedas y filtros." },
+    posicionamiento: { title:"Posicionamiento", body:"Lugar en los resultados de búsqueda donde aparece tu publicación. A mejor reputación y con Full, más arriba aparecés." },
+    ticket_promedio: { title:"Ticket promedio", body:"Precio medio de venta por transacción. Armando combos se eleva el ticket y puede sacar al producto del tramo con cargo fijo." },
+    rotacion: { title:"Rotación", body:"Velocidad a la que se vende un producto. Productos que no rotan en Full generan cargos de almacenamiento prolongado." },
+    envio_gratis: { title:"Envío gratis", body:"Cuando el vendedor absorbe el costo del envío. Mejora la conversión. ML lo descuenta automáticamente del pago." },
+    demora_despacho: { title:"Demora de despacho", body:"Cuando el vendedor no despacha dentro del plazo (1–2 días hábiles). Más del 10% de demoras baja la reputación." },
+    mercadopago: { title:"Mercado Pago", body:"Billetera virtual donde cae el dinero de cada venta antes de llegar a tu banco." },
+    cbu: { title:"CBU", body:"Código de 22 dígitos que identifica tu cuenta bancaria. Necesario para transferir el dinero de las ventas." },
+    cuit: { title:"CUIT", body:"Clave Única de Identificación Tributaria. Número fiscal de 11 dígitos. ML lo necesita para configurar la cuenta empresa." },
+    condicion_afip: { title:"Condición AFIP", body:"Monotributista o Responsable Inscripto. Determina qué porcentaje retiene ML automáticamente de cada venta." },
+    perfil: { title:"Perfil público", body:"Logo, descripción, política de devolución y preguntas frecuentes que ve el comprador. Un perfil completo genera más confianza." },
+    politica_dev: { title:"Política de devolución", body:"Texto donde aclarás en qué condiciones aceptás devoluciones. Fundamental para productos caros." },
+    preguntas_freq: { title:"Preguntas frecuentes", body:"Respuestas pre-cargadas a preguntas comunes. Ahorran tiempo y responden al comprador al instante." },
+    combo: { title:"Combo estratégico", body:"Publicación que agrupa 2+ productos. Eleva el ticket y puede sacar productos de tramos con cargo fijo." },
+    mi_pagina: { title:"Mi Página", body:"Sección en ML con logo, banner y productos organizados con identidad de marca. Importante para Portal Tech." },
+  };
+
+  function rmInitTooltips() {
+    const tip = document.getElementById('rmGlobalTip');
+    const tipTitle = document.getElementById('rmTipTitle');
+    const tipBody = document.getElementById('rmTipBody');
+    if (!tip) return;
+
+    document.querySelectorAll('.rm-ttrig').forEach(el => {
+      el.addEventListener('mouseenter', function(e) {
+        const def = RM_DEFS[this.dataset.rmkey];
+        if (!def) return;
+        tipTitle.textContent = def.title;
+        tipBody.textContent = def.body;
+        tip.style.display = 'block';
+        rmPosTip(e);
+      });
+      el.addEventListener('mousemove', rmPosTip);
+      el.addEventListener('mouseleave', () => tip.style.display = 'none');
+    });
+  }
+
+  function rmPosTip(e) {
+    const tip = document.getElementById('rmGlobalTip');
+    if (!tip) return;
+    const margin = 14, tw = 240, th = tip.offsetHeight || 100;
+    let x = e.clientX + margin, y = e.clientY + margin;
+    if (x + tw > window.innerWidth - 10) x = e.clientX - tw - margin;
+    if (y + th > window.innerHeight - 10) y = e.clientY - th - margin;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+
+  function rmToggle(header) {
+    const body = header.nextElementSibling;
+    const chevron = header.querySelector('.rm-chevron');
+    const isOpen = body.classList.toggle('open');
+    chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  }
+
+  function rmToggleDone(tarea) {
+    if (!tarea.classList.contains('rm-tarea')) return;
+    tarea.classList.toggle('done');
+    const check = tarea.querySelector('.rm-tarea-check');
+    if (check) check.textContent = tarea.classList.contains('done') ? '✓' : '';
+    rmUpdateProgress();
+  }
+
+  function rmUpdateProgress() {
+    const total = document.querySelectorAll('.rm-tarea').length;
+    const done = document.querySelectorAll('.rm-tarea.done').length;
+    const pct = total > 0 ? (done / total * 100).toFixed(0) : 0;
+    const fill = document.getElementById('rmProgressFill');
+    const counter = document.getElementById('rmDoneCounter');
+    if (fill) fill.style.width = pct + '%';
+    if (counter) counter.textContent = done + ' / ' + total + ' tareas';
+  }
+
+  // Initialize roadmap when tab first opens
+  let rmInitialized = false;
+  function rmInit() {
+    if (rmInitialized) return;
+    rmInitialized = true;
+    // Open S1 accordion
+    const s1body = document.querySelector('.rm-s1 .rm-semana-body');
+    const s1chev = document.querySelector('.rm-s1 .rm-chevron');
+    if (s1body) s1body.classList.add('open');
+    if (s1chev) s1chev.style.transform = 'rotate(180deg)';
+    rmInitTooltips();
+    rmUpdateProgress();
+  }
 
 </script>
 </body>
