@@ -791,4 +791,793 @@
   <div class="panel">
     <div class="panel-title">Configuración ML</div>
 
-    <div class="fiel
+    <div class="field">
+      <label>Tipo de Publicación</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-premium" onclick="setType('premium')">
+          ★ Premium<br><small style="font-size:9px;opacity:0.7">~16.5%</small>
+        </button>
+        <button class="toggle-btn" id="btn-clasica" onclick="setType('clasica')">
+          Clásica<br><small style="font-size:9px;opacity:0.7">~13%</small>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Logística</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-estandar" onclick="setLogistica('estandar')">
+          Estándar
+        </button>
+        <button class="toggle-btn" id="btn-full" onclick="setLogistica('full')">
+          Full ML
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Envío</label>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="btn-gratis" onclick="setEnvio('gratis')">
+          Gratis (vos)
+        </button>
+        <button class="toggle-btn active" id="btn-comprador" onclick="setEnvio('comprador')">
+          Lo paga el comprador
+        </button>
+      </div>
+    </div>
+
+    <div class="field" id="envio-manual-wrap" style="display:none">
+      <label>Costo del Envío que Absorbés (ARS $)</label>
+      <input type="number" id="shippingCost" placeholder="Ej: 2500" min="0" />
+    </div>
+
+    <button class="calc-btn" onclick="calcular()">↳ Calcular Neto Real</button>
+  </div>
+
+  <!-- Results -->
+  <div class="results-panel" id="resultsPanel">
+    <div class="panel-title">Resultado <span id="productLabel" style="color:var(--accent);margin-left:6px;text-transform:none;letter-spacing:0;font-size:11px;font-family:'Space Mono'"></span></div>
+
+    <div class="result-grid" id="resultGrid"></div>
+
+    <div class="meter-wrap">
+      <div class="meter-label">
+        <span>ML se queda</span>
+        <span id="meterPct">0%</span>
+      </div>
+      <div class="meter-bar">
+        <div class="meter-fill" id="meterFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="breakdown" id="breakdownSection"></div>
+
+    <div class="alert" id="alertBox"></div>
+
+    <!-- Suggestion Box -->
+    <div class="suggestion-box" id="suggestionBox">
+      <div class="suggestion-header">
+        💡 Sugerencia de Precio — <span>¿Cuánto cobrar para ganar lo que querés?</span>
+      </div>
+      <div class="suggestion-target-wrap">
+        <label>Margen objetivo:</label>
+        <input type="number" id="targetMargin" class="target-input" value="10" min="1" max="99" />
+        <label>%</label>
+        <button class="recalc-btn" onclick="calcularSugerencia()">↳ Recalcular</button>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:auto">sobre el precio de venta</span>
+      </div>
+      <div class="suggestion-rows" id="suggestionRows"></div>
+    </div>
+  </div>
+
+</div>
+
+
+</div><!-- end .container -->
+</div><!-- end #tab-costos -->
+
+<!-- COLECTA TAB -->
+<div class="tab-pane colecta-pane" id="tab-colecta">
+<div class="colecta-container">
+
+  <!-- Dimensiones del producto -->
+  <div class="panel">
+    <div class="panel-title">Dimensiones del Producto</div>
+
+    <div class="field">
+      <label>Nombre (opcional)</label>
+      <input type="text" id="colectaName" placeholder="Ej: Caja teclados x10" />
+    </div>
+
+    <div class="field">
+      <label>Dimensiones del bulto (cm)</label>
+      <div class="dim-grid">
+        <div>
+          <input type="number" id="dimAncho" placeholder="0" min="0" />
+          <div class="dim-label">ANCHO</div>
+        </div>
+        <div>
+          <input type="number" id="dimAlto" placeholder="0" min="0" />
+          <div class="dim-label">ALTO</div>
+        </div>
+        <div>
+          <input type="number" id="dimProfundo" placeholder="0" min="0" />
+          <div class="dim-label">PROFUNDO</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Cantidad de bultos</label>
+      <div class="qty-wrap">
+        <input type="number" id="colectaCantidad" value="1" min="1" placeholder="1" />
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">bulto(s)</span>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calcularColecta()" style="margin-top:16px">↳ Calcular Costo Colecta</button>
+
+    <div class="vol-display" id="volDisplay" style="display:none">
+      <span class="vol-label">Volumen total</span>
+      <span class="vol-value" id="volValue">— m³</span>
+    </div>
+
+  </div>
+
+  <!-- Info / tabla referencia -->
+  <div class="panel">
+    <div class="panel-title">Tabla de Tramos</div>
+    <table class="colecta-table" id="colectaRefTable">
+      <thead>
+        <tr>
+          <th>Volumen</th>
+          <th>Costo colecta</th>
+        </tr>
+      </thead>
+      <tbody id="colectaTableBody"></tbody>
+    </table>
+    <div style="margin-top:10px;font-family:var(--font-mono);font-size:9px;color:var(--muted);line-height:1.6">
+      Fuente: ML Argentina · ayuda/costos-colecta-5-20-km
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="colecta-result" id="colectaResult">
+    <div class="colecta-result-inner">
+      <div class="panel-title">Resultado colecta <span id="colectaProductLabel" style="color:var(--accent);margin-left:6px;text-transform:none;letter-spacing:0;font-size:11px;font-family:'Space Mono'"></span></div>
+
+      <div id="tramoBadge" class="tramo-badge"></div>
+
+      <div class="colecta-cards" id="colectaCards"></div>
+
+      <div class="note-box" id="colectaNoteBox"></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- end #tab-colecta -->
+
+
+<!-- CATÁLOGO TAB -->
+<div class="tab-pane catalogo-pane" id="tab-catalogo">
+<div class="cat-container">
+
+  <div class="cat-sub">Comisión ML + Cargo fijo · Neto real por producto · Recomendación de publicación</div>
+
+  <div class="summary">
+    <div class="scard">
+      <div class="val" style="color:var(--text)">20</div>
+      <div class="lbl">Productos totales</div>
+    </div>
+    <div class="scard">
+      <div class="val" style="color:var(--accent2)">10</div>
+      <div class="lbl">Margen sano &gt;$60k</div>
+    </div>
+    <div class="scard">
+      <div class="val" style="color:var(--orange)">9</div>
+      <div class="lbl">Cargo fijo peligroso</div>
+    </div>
+    <div class="scard">
+      <div class="val" style="color:var(--red)">1</div>
+      <div class="lbl">Inviable en ML</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="leg"><span class="dot dot-green"></span>Sano (ML ≤17%)</span>
+    <span class="leg"><span class="dot dot-yellow"></span>Cuidado (ML 18–24%)</span>
+    <span class="leg"><span class="dot dot-orange"></span>Peligroso (ML 25–35%)</span>
+    <span class="leg"><span class="dot dot-red"></span>Inviable (ML &gt;35%)</span>
+  </div>
+
+  <div class="cat-tabs">
+    <div class="cat-tab active" onclick="catFiltrar('todos',this)">Todos (20)</div>
+    <div class="cat-tab" onclick="catFiltrar('sano',this)">🟢 Sano (10)</div>
+    <div class="cat-tab" onclick="catFiltrar('cuidado',this)">🟡 Cuidado (0)</div>
+    <div class="cat-tab" onclick="catFiltrar('peligroso',this)">🟠 Peligroso (9)</div>
+    <div class="cat-tab" onclick="catFiltrar('inviable',this)">🔴 Inviable (1)</div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="cat-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Tipo Rec.</th>
+          <th>Comisión</th>
+          <th>Cargo fijo</th>
+          <th>ML Total</th>
+          <th>ML %</th>
+          <th>Neto</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="catTbody"></tbody>
+    </table>
+  </div>
+
+  <div id="catAlertaZona"></div>
+
+</div>
+</div><!-- end #tab-catalogo -->
+
+<footer>
+  Basado en tarifas ML Argentina vigentes · Siempre verificar en mercadolibre.com.ar/simulador-de-costos
+</footer>
+
+<script>
+  let pubType = 'premium';
+  let logistica = 'estandar';
+  let envioMode = 'comprador';
+
+  function setType(t) {
+    pubType = t;
+    document.getElementById('btn-premium').classList.toggle('active', t === 'premium');
+    document.getElementById('btn-clasica').classList.toggle('active', t === 'clasica');
+  }
+
+  function setLogistica(l) {
+    logistica = l;
+    document.getElementById('btn-estandar').classList.toggle('active', l === 'estandar');
+    document.getElementById('btn-full').classList.toggle('active', l === 'full');
+  }
+
+  function setEnvio(e) {
+    envioMode = e;
+    document.getElementById('btn-gratis').classList.toggle('active', e === 'gratis');
+    document.getElementById('btn-comprador').classList.toggle('active', e === 'comprador');
+    document.getElementById('envio-manual-wrap').style.display = e === 'gratis' ? 'block' : 'none';
+  }
+
+  function fmt(n) {
+    return '$' + Math.round(n).toLocaleString('es-AR');
+  }
+
+  function pct(n) {
+    return n.toFixed(1) + '%';
+  }
+
+  // Comisiones ML Argentina (aprox vigentes)
+  function getComision(price, type) {
+    // Premium: ~16.5% todos los tramos
+    // Clásica: ~13% si >$60k, ~9% si <$60k (aprox)
+    if (type === 'premium') {
+      return 0.165;
+    } else {
+      // Clásica
+      if (price >= 60000) return 0.13;
+      return 0.09;
+    }
+  }
+
+  // Cargo fijo por tramo de precio
+  function getCargoFijo(price, type) {
+    if (type === 'clasica') return 0; // Clásica no tiene cargo fijo
+    // Premium
+    if (price <= 15000) return 1115;
+    if (price <= 25000) return 2300;
+    if (price <= 33000) return 2810;
+    if (price <= 60000) return 4000;
+    return 0; // >$60.000 sin cargo fijo
+  }
+
+  // Costo Full aproximado (fee manipulación por unidad)
+  function getFullFee(price) {
+    // Aprox 2.5% o mínimo fijo según categoría
+    return Math.max(Math.round(price * 0.025), 800);
+  }
+
+  function calcular() {
+    const price = parseFloat(document.getElementById('salePrice').value) || 0;
+    const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+    const shippingAbsorbido = envioMode === 'gratis' 
+      ? (parseFloat(document.getElementById('shippingCost').value) || 0)
+      : 0;
+    const productName = document.getElementById('productName').value || 'Producto';
+
+    if (price <= 0) {
+      alert('Ingresá el precio de venta.');
+      return;
+    }
+
+    const comisionRate = getComision(price, pubType);
+    const comisionMonto = price * comisionRate;
+    const cargoFijo = getCargoFijo(price, pubType);
+    const fullFee = logistica === 'full' ? getFullFee(price) : 0;
+
+    const totalDescuentos = comisionMonto + cargoFijo + shippingAbsorbido + fullFee;
+    const neto = price - totalDescuentos;
+    const pctML = (totalDescuentos / price) * 100;
+    const margenBruto = cost > 0 ? ((neto - cost) / price) * 100 : null;
+    const ganancia = cost > 0 ? neto - cost : null;
+
+    // Render
+    document.getElementById('productLabel').textContent = '→ ' + productName;
+    document.getElementById('resultsPanel').classList.add('visible');
+
+    const grid = document.getElementById('resultGrid');
+    let cardClass = pctML > 30 ? 'danger' : pctML > 20 ? 'warning' : 'highlight';
+    let valueClass = pctML > 30 ? 'red' : pctML > 20 ? 'orange' : 'green';
+
+    let cardsHtml = `
+      <div class="result-card highlight">
+        <span class="rc-label">Precio de Venta</span>
+        <span class="rc-value yellow">${fmt(price)}</span>
+        <span class="rc-sub">${pubType === 'premium' ? '★ Premium' : 'Clásica'} · ${logistica === 'full' ? 'Full' : 'Estándar'}</span>
+      </div>
+      <div class="result-card ${cardClass}">
+        <span class="rc-label">ML se lleva</span>
+        <span class="rc-value ${valueClass}">${pct(pctML)}</span>
+        <span class="rc-sub">${fmt(totalDescuentos)} en descuentos</span>
+      </div>
+      <div class="result-card highlight">
+        <span class="rc-label">Neto que Cobrás</span>
+        <span class="rc-value green">${fmt(neto)}</span>
+        <span class="rc-sub">Antes de impuestos</span>
+      </div>
+    `;
+
+    if (cost > 0 && ganancia !== null) {
+      let gClass = ganancia < 0 ? 'danger' : 'highlight';
+      let gValClass = ganancia < 0 ? 'red' : 'green';
+      cardsHtml += `
+        <div class="result-card ${gClass}">
+          <span class="rc-label">Ganancia Neta</span>
+          <span class="rc-value ${gValClass}">${fmt(ganancia)}</span>
+          <span class="rc-sub">Margen: ${margenBruto !== null ? pct(margenBruto) : '—'}</span>
+        </div>
+      `;
+    }
+
+    grid.innerHTML = cardsHtml;
+
+    // Meter
+    const meter = document.getElementById('meterFill');
+    const meterPct = document.getElementById('meterPct');
+    const w = Math.min(pctML, 100);
+    const meterColor = pctML > 30 ? '#FF4545' : pctML > 20 ? '#FF8C00' : '#3BFFA0';
+    meter.style.width = w + '%';
+    meter.style.background = meterColor;
+    meterPct.textContent = pct(pctML);
+    meterPct.style.color = meterColor;
+
+    // Breakdown
+    let tramo = price <= 15000 ? 'hasta $15.000' 
+      : price <= 25000 ? '$15k–$25k'
+      : price <= 33000 ? '$25k–$33k'
+      : price <= 60000 ? '$33k–$60k' : 'más de $60.000';
+
+    let breakdownHtml = `
+      <div class="breakdown-title">Desglose completo</div>
+      <div class="breakdown-row">
+        <span class="item">Precio de venta</span>
+        <span class="amount pos">${fmt(price)}</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="item">Comisión ${pubType === 'premium' ? 'Premium' : 'Clásica'} (${pct(comisionRate * 100)})</span>
+        <span class="amount neg">− ${fmt(comisionMonto)}</span>
+      </div>
+    `;
+
+    if (cargoFijo > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Cargo fijo (tramo ${tramo})</span>
+          <span class="amount neg">− ${fmt(cargoFijo)}</span>
+        </div>
+      `;
+    } else if (pubType === 'premium') {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Cargo fijo (tramo ${tramo})</span>
+          <span class="amount" style="color:var(--accent2)">Sin cargo ✓</span>
+        </div>
+      `;
+    }
+
+    if (shippingAbsorbido > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Envío gratis (absorbés)</span>
+          <span class="amount neg">− ${fmt(shippingAbsorbido)}</span>
+        </div>
+      `;
+    }
+
+    if (fullFee > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Fee Full ML (~2.5%)</span>
+          <span class="amount neg">− ${fmt(fullFee)}</span>
+        </div>
+      `;
+    }
+
+    breakdownHtml += `
+      <div class="breakdown-row total-row">
+        <span class="item" style="color:var(--text);font-weight:700">Neto que recibís</span>
+        <span class="amount pos">${fmt(neto)}</span>
+      </div>
+    `;
+
+    if (cost > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Costo del producto</span>
+          <span class="amount neg">− ${fmt(cost)}</span>
+        </div>
+        <div class="breakdown-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:12px;font-size:15px">
+          <span class="item" style="color:var(--text);font-weight:700">Ganancia neta</span>
+          <span class="amount ${ganancia < 0 ? 'neg' : 'pos'}" style="font-size:16px">${fmt(ganancia)}</span>
+        </div>
+      `;
+    }
+
+    document.getElementById('breakdownSection').innerHTML = breakdownHtml;
+
+    // Alert
+    const alertBox = document.getElementById('alertBox');
+    alertBox.className = 'alert';
+    if (neto < 0 || (cost > 0 && ganancia < 0)) {
+      alertBox.classList.add('danger', 'show');
+      alertBox.innerHTML = '⚠️ VENDÉS A PÉRDIDA — Revisá el precio o absorbé menos costos. Este producto no es rentable con la configuración actual.';
+    } else if (pctML > 30) {
+      alertBox.classList.add('warning', 'show');
+      alertBox.innerHTML = `⚡ Tramo peligroso — ML se lleva ${pct(pctML)} de tu precio. El cargo fijo aplasta el margen. Opciones: subir precio, no ofrecer envío gratis, o armar combos para superar los $60.000.`;
+    } else if (cargoFijo === 0 && price > 60000) {
+      alertBox.classList.add('ok', 'show');
+      alertBox.innerHTML = `✓ Sin cargo fijo — Productos sobre $60.000 no pagan cargo fijo. Tramo más rentable de ML. Margen estable.`;
+    } else {
+      alertBox.classList.add('show');
+      alertBox.className = 'alert ok show';
+      alertBox.innerHTML = `✓ Rentabilidad razonable — ML se lleva ${pct(pctML)}. Verificá igualmente con el simulador oficial antes de publicar.`;
+    }
+
+    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Show suggestion box only if cost was entered
+    const sugBox = document.getElementById('suggestionBox');
+    if (cost > 0) {
+      sugBox.classList.add('show');
+      calcularSugerencia();
+    } else {
+      sugBox.classList.remove('show');
+    }
+  }
+
+  // Precio sugerido: búsqueda binaria para encontrar P tal que ganancia/P = margenTarget
+  function calcularPrecioParaMargen(cost, margenTarget, shippingAbsorbido) {
+    let lo = cost * 0.5, hi = cost * 30;
+    for (let i = 0; i < 80; i++) {
+      const mid = (lo + hi) / 2;
+      const comRate = getComision(mid, pubType);
+      const cf = getCargoFijo(mid, pubType);
+      const ff = logistica === 'full' ? getFullFee(mid) : 0;
+      const neto = mid - (mid * comRate + cf + shippingAbsorbido + ff);
+      const ganancia = neto - cost;
+      const margenReal = ganancia / mid;
+      if (margenReal < margenTarget) lo = mid;
+      else hi = mid;
+    }
+    return Math.ceil((lo + hi) / 2 / 100) * 100;
+  }
+
+  function calcularSugerencia() {
+    const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+    if (cost <= 0) return;
+
+    const targetPct = (parseFloat(document.getElementById('targetMargin').value) || 10) / 100;
+    const shippingAbsorbido = envioMode === 'gratis'
+      ? (parseFloat(document.getElementById('shippingCost').value) || 0)
+      : 0;
+
+    const precio10 = calcularPrecioParaMargen(cost, 0.10, shippingAbsorbido);
+    const precioTarget = calcularPrecioParaMargen(cost, targetPct, shippingAbsorbido);
+    const precioBreakeven = calcularPrecioParaMargen(cost, 0, shippingAbsorbido);
+
+    function detalles(p) {
+      const comRate = getComision(p, pubType);
+      const cf = getCargoFijo(p, pubType);
+      const ff = logistica === 'full' ? getFullFee(p) : 0;
+      const totalDesc = p * comRate + cf + shippingAbsorbido + ff;
+      const neto = p - totalDesc;
+      const gan = neto - cost;
+      const margenReal = (gan / p * 100).toFixed(1);
+      const pctMLReal = (totalDesc / p * 100).toFixed(1);
+      return { neto, gan, margenReal, pctMLReal };
+    }
+
+    const dBE = detalles(precioBreakeven);
+    const d10 = detalles(precio10);
+    const dTarget = detalles(precioTarget);
+    const targetLabel = Math.round(targetPct * 100);
+    const showSeparate10 = Math.abs(precioTarget - precio10) >= 200 || targetLabel === 10;
+
+    let html = `
+      <div class="sug-item">
+        <span class="sug-label">Break-even — 0% margen</span>
+        <span class="sug-price">${fmt(precioBreakeven)}</span>
+        <span class="sug-detail">
+          Cubrís exactamente el costo<br>
+          ML se lleva: ${dBE.pctMLReal}% · Neto: ${fmt(dBE.neto)}
+        </span>
+      </div>
+    `;
+
+    if (showSeparate10 && targetLabel !== 10) {
+      html += `
+        <div class="sug-item" style="border-left:2px solid var(--accent2)">
+          <span class="sug-label">Para ganar 10%</span>
+          <span class="sug-price">${fmt(precio10)}</span>
+          <span class="sug-detail">
+            Ganancia: <strong>${fmt(d10.gan)}</strong><br>
+            ML se lleva: ${d10.pctMLReal}% · Neto: ${fmt(d10.neto)}
+          </span>
+        </div>
+      `;
+    }
+
+    html += `
+      <div class="sug-item" style="border-left:2px solid var(--accent);background:rgba(255,224,51,0.05)">
+        <span class="sug-label">★ Para ganar ${targetLabel}%</span>
+        <span class="sug-price" style="color:var(--accent)">${fmt(precioTarget)}</span>
+        <span class="sug-detail">
+          Ganancia: <strong style="color:var(--accent2)">${fmt(dTarget.gan)}</strong><br>
+          ML se lleva: ${dTarget.pctMLReal}% · Neto: ${fmt(dTarget.neto)}
+        </span>
+      </div>
+    `;
+
+    document.getElementById('suggestionRows').innerHTML = html;
+  }
+
+  // ── TAB SWITCHING ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelector('[onclick="switchTab(\''+tab+'\')"]').classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'colecta') renderColectaTable(-1);
+    if (tab === 'catalogo') { catRender('todos'); catMostrarAlerta('todos'); }
+  }
+
+  // ── COLECTA DATA ──
+  const COLECTA_TRAMOS = [
+    { label: 'Hasta 0,05 m³',    max: 0.05,  min_c: 10813,  max_c: 10813 },
+    { label: '0,05 – 0,10 m³',   max: 0.10,  min_c: 10813,  max_c: 21626 },
+    { label: '0,10 – 0,20 m³',   max: 0.20,  min_c: 14417,  max_c: 28835 },
+    { label: '0,20 – 0,30 m³',   max: 0.30,  min_c: 23592,  max_c: 35388 },
+    { label: '0,30 – 0,50 m³',   max: 0.50,  min_c: 22789,  max_c: 37982 },
+    { label: '0,50 – 1 m³',      max: 1.00,  min_c: 22923,  max_c: 45846 },
+    { label: '1 – 2 m³',         max: 2.00,  min_c: 27759,  max_c: 55518 },
+    { label: '2 – 5 m³',         max: 5.00,  min_c: 42538,  max_c: 106345 },
+    { label: '5 – 10 m³',        max: 10.00, min_c: 90045,  max_c: 180090 },
+    { label: '10 – 20 m³',       max: 20.00, min_c: 161620, max_c: 323240 },
+    { label: '20 – 35 m³',       max: 35.00, min_c: 251500, max_c: 440125 },
+    { label: '35 – 50 m³',       max: 50.00, min_c: 430360, max_c: 614800 },
+  ];
+
+  function getColectaTramo(vol) {
+    for (let i = 0; i < COLECTA_TRAMOS.length; i++) {
+      if (vol <= COLECTA_TRAMOS[i].max) return i;
+    }
+    return COLECTA_TRAMOS.length - 1;
+  }
+
+  function renderColectaTable(activeIdx) {
+    const tbody = document.getElementById('colectaTableBody');
+    tbody.innerHTML = COLECTA_TRAMOS.map((t, i) => {
+      const costoStr = t.min_c === t.max_c
+        ? fmt(t.min_c)
+        : fmt(t.min_c) + ' – ' + fmt(t.max_c);
+      return `<tr class="${i === activeIdx ? 'active-row' : ''}">
+        <td>${t.label}</td>
+        <td>${costoStr}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Live volume update as user types
+  ['dimAncho','dimAlto','dimProfundo','colectaCantidad'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateVolDisplay);
+  });
+
+  function updateVolDisplay() {
+    const a = parseFloat(document.getElementById('dimAncho').value) || 0;
+    const h = parseFloat(document.getElementById('dimAlto').value) || 0;
+    const p = parseFloat(document.getElementById('dimProfundo').value) || 0;
+    const q = parseFloat(document.getElementById('colectaCantidad').value) || 1;
+    const volDisplay = document.getElementById('volDisplay');
+    if (a > 0 && h > 0 && p > 0) {
+      const vol = (a / 100) * (h / 100) * (p / 100) * q;
+      document.getElementById('volValue').textContent = vol.toFixed(4) + ' m³';
+      volDisplay.style.display = 'flex';
+    } else {
+      volDisplay.style.display = 'none';
+    }
+  }
+
+  function calcularColecta() {
+    const a = parseFloat(document.getElementById('dimAncho').value) || 0;
+    const h = parseFloat(document.getElementById('dimAlto').value) || 0;
+    const p = parseFloat(document.getElementById('dimProfundo').value) || 0;
+    const q = Math.max(1, parseFloat(document.getElementById('colectaCantidad').value) || 1);
+    const nombre = document.getElementById('colectaName').value || 'Envío Full';
+
+    if (a <= 0 || h <= 0 || p <= 0) {
+      alert('Ingresá los tres valores de dimensiones (ancho, alto y profundo).');
+      return;
+    }
+
+    const volUnitario = (a / 100) * (h / 100) * (p / 100);
+    const volTotal = volUnitario * q;
+    const tramoIdx = getColectaTramo(volTotal);
+    const tramo = COLECTA_TRAMOS[tramoIdx];
+
+    // Interpolación lineal dentro del tramo para estimar costo
+    // Usamos el rango del tramo para dar un valor estimado proporcional
+    const tramoMin = tramoIdx === 0 ? 0 : COLECTA_TRAMOS[tramoIdx - 1].max;
+    const tramoMax = tramo.max;
+    const ratio = tramoMax === tramoMin ? 0.5 : Math.min((volTotal - tramoMin) / (tramoMax - tramoMin), 1);
+    const costoEstimado = tramo.min_c + ratio * (tramo.max_c - tramo.min_c);
+
+    // Render
+    document.getElementById('colectaProductLabel').textContent = '→ ' + nombre;
+    document.getElementById('tramoBadge').textContent = 'Tramo: ' + tramo.label;
+
+    const cards = document.getElementById('colectaCards');
+    cards.innerHTML = `
+      <div class="result-card highlight">
+        <span class="rc-label">Volumen unitario</span>
+        <span class="rc-value yellow">${volUnitario.toFixed(4)} m³</span>
+        <span class="rc-sub">${a}×${h}×${p} cm</span>
+      </div>
+      <div class="result-card highlight">
+        <span class="rc-label">Volumen total (×${q})</span>
+        <span class="rc-value green">${volTotal.toFixed(4)} m³</span>
+        <span class="rc-sub">${q} bulto${q > 1 ? 's' : ''}</span>
+      </div>
+      <div class="result-card" style="border-color:var(--accent);background:rgba(255,224,51,0.05)">
+        <span class="rc-label">Costo mínimo</span>
+        <span class="rc-value yellow">${fmt(tramo.min_c)}</span>
+        <span class="rc-sub">Extremo inferior del tramo</span>
+      </div>
+      <div class="result-card" style="border-color:var(--accent);background:rgba(255,224,51,0.05)">
+        <span class="rc-label">Costo máximo</span>
+        <span class="rc-value yellow">${fmt(tramo.max_c)}</span>
+        <span class="rc-sub">Extremo superior del tramo</span>
+      </div>
+      <div class="result-card" style="border-color:var(--accent2);background:rgba(59,255,160,0.07)">
+        <span class="rc-label">★ Estimado (interpolado)</span>
+        <span class="rc-value green">${fmt(costoEstimado)}</span>
+        <span class="rc-sub">Aprox. según posición en tramo</span>
+      </div>
+    `;
+
+    renderColectaTable(tramoIdx);
+
+    document.getElementById('colectaNoteBox').innerHTML = `
+      ✓ Volumen calculado: <strong>${volTotal.toFixed(4)} m³</strong> — cae en el tramo <strong>${tramo.label}</strong>.<br>
+      ML cobra entre <strong>${fmt(tramo.min_c)}</strong> y <strong>${fmt(tramo.max_c)}</strong> por colecta en este tramo (5–20 km).<br>
+      El estimado interpolado es <strong>${fmt(costoEstimado)}</strong>. Verificá el costo exacto en el simulador oficial de ML.
+    `;
+
+    document.getElementById('colectaResult').classList.add('visible');
+    document.getElementById('colectaResult').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // Init table on load
+  renderColectaTable(-1);
+
+
+  // ── CATÁLOGO ──
+  const CAT_PRODUCTOS = [
+    { n:"Drone DJI Avata Pro View", precio:1424000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Consola Nintendo Switch OLED White 64GB", precio:720000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Procesador Intel Core Ultra 7 265KF", precio:590000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"RAM Adata XPG Lancer Blade DDR5 16GB", precio:395000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Mother Asus Prime B860M-A (1851)", precio:280100, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Pokémon TCG Booster Box Violet EX Japonés", precio:170000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Pokémon TCG Booster Box Gem Pack 3 Chino", precio:139000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Fuente Redragon GC-PS011 800W 80+ Bronce", precio:132000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Rack Redragon Cosmos RDRK", precio:129000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Mini PC Pro Noga Android 12 / 4K", precio:100000, tipo:"Premium", com:0.165, fijo:0, grupo:"sano" },
+    { n:"Webcam Redragon GW800 Hitman", precio:59000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso", nota:"$59k: cuotas no aplican con Clásica. Evaluar." },
+    { n:"Mouse Trackball Logitech Ergo M575S", precio:55000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Teclado Redragon K617-RGB Fizz Pink/White", precio:50000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Fuente Noga 87W USB-C NGA-902UL", precio:50000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Pokémon TCG Tangela Pack Blister", precio:40000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Mouse Aula Wireless SC380 Pro 12K DPI", precio:33000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Teclado Raptor Fireclaw M104 Switch Red", precio:30000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Trust HDMI GXT 731 1.8mts", precio:25000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Auricular Noga Aris BT con Vincha", precio:22000, tipo:"Clásica", com:0.10, fijo:0, grupo:"peligroso" },
+    { n:"Adaptador Nisuta USB-C a USB Macho", precio:4100, tipo:"NO PUBLICAR", com:0.10, fijo:0, grupo:"inviable", nota:"Margen inviable incluso con Clásica. Solo sirve en combo." },
+  ];
+
+  function catColor(g){ return g==='sano'?'green':g==='cuidado'?'yellow':g==='peligroso'?'orange':'red'; }
+  function catLabel(g){ return g==='sano'?'✓ Sano':g==='cuidado'?'⚡ Cuidado':g==='peligroso'?'⚠ Peligroso':'✗ Inviable'; }
+
+  function catRender(filtro) {
+    const tbody = document.getElementById('catTbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    CAT_PRODUCTOS.forEach((p, i) => {
+      if (filtro !== 'todos' && p.grupo !== filtro) return;
+      const mlTotal = p.precio * p.com + p.fijo;
+      const mlPct = (mlTotal / p.precio * 100).toFixed(1);
+      const neto = p.precio - mlTotal;
+      const c = catColor(p.grupo);
+      const pctColor = c==='green'?'var(--accent2)':c==='yellow'?'var(--accent)':c==='orange'?'var(--orange)':'var(--red)';
+
+      let fijoPremiumHtml = '';
+      if (p.precio < 60000 && p.tipo !== 'NO PUBLICAR') {
+        const fp = p.precio<=15000?1115:p.precio<=25000?2300:p.precio<=33000?2810:4000;
+        fijoPremiumHtml = ` <span style="color:var(--red);font-size:9px">(Prem: ${fmt(fp)})</span>`;
+      }
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="color:var(--muted)">${i+1}</td>
+        <td class="td-name">${p.n}${p.nota?`<br><span style="font-size:10px;color:var(--orange);font-family:var(--font-mono)">${p.nota}</span>`:''}</td>
+        <td style="font-family:var(--font-mono)">${fmt(p.precio)}</td>
+        <td><span class="badge badge-${c==='inviable'?'red':c==='green'?'green':'yellow'}" style="${p.tipo==='NO PUBLICAR'?'color:var(--red)':''}">${p.tipo}</span></td>
+        <td style="color:var(--muted);font-family:var(--font-mono)">${fmt(p.precio*p.com)}<br><span style="font-size:9px">${(p.com*100).toFixed(0)}%</span></td>
+        <td style="color:var(--muted);font-family:var(--font-mono)">${p.fijo>0?fmt(p.fijo):'<span style="color:var(--accent2)">$0 ✓</span>'}${fijoPremiumHtml}</td>
+        <td style="color:${pctColor};font-weight:700;font-family:var(--font-mono)">${fmt(mlTotal)}</td>
+        <td style="color:${pctColor};font-weight:800;font-family:var(--font-mono)">${mlPct}%</td>
+        <td style="font-weight:700;font-family:var(--font-mono);color:${neto<0?'var(--red)':'var(--text)'}">${fmt(neto)}</td>
+        <td><span class="badge badge-${c}">${catLabel(p.grupo)}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function catFiltrar(f, el) {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    catRender(f);
+    catMostrarAlerta(f);
+  }
+
+  function catMostrarAlerta(f) {
+    const z = document.getElementById('catAlertaZona');
+    if (!z) return;
+    if (f==='inviable') {
+      z.innerHTML = `<div class="cat-alert cat-alert-red">⚠ ADAPTADOR NISUTA $4.100 — Incluso con Clásica al 10%, ML se lleva $410 y el neto es $3.690. En cualquier producto de bajo precio, un reclamo o devolución destruye el margen. Estrategia: incluirlo solo en combos (ej: "Teclado + Adaptador USB-C") donde el ticket total supera $60.000 y el cargo fijo desaparece.</div>`;
+    } else if (f==='peligroso') {
+      z.innerHTML = `<div class="cat-alert cat-alert-orange">⚡ TRAMO PELIGROSO — Los 9 productos bajo $60.000 se publican en Clásica (10%) para evitar el cargo fijo de Premium ($2.810–$4.000). Con Clásica el neto mejora significativamente, pero se pierden cuotas sin interés. Para productos $40k–$59k donde las cuotas importan, evaluar caso por caso si la diferencia de conversión justifica el costo de Premium.</div>`;
+    } else if (f==='sano') {
+      z.innerHTML = `<div class="cat-alert cat-alert-green">✓ ZONA VERDE — Los 10 productos sobre $60.000 son el motor de Portal Tech en ML. Premium es óptimo: sin cargo fijo, cuotas sin interés incluidas, mayor visibilidad. ML se lleva exactamente 16,5% en todos. Son los candidatos prioritarios para Full y para arrancar Ads.</div>`;
+    } else {
+      z.innerHTML = `<div class="cat-alert cat-alert-orange">📊 RESUMEN ESTRATÉGICO — 10 productos en zona verde (>$60k, Premium). 9 en zona peligrosa (<$60k, publicar en Clásica para evitar cargo fijo). 1 inviable como producto individual (Adaptador $4.100, solo viable en combo). El catálogo de Portal Tech tiene base sólida: el 50% del catálogo está en la zona más rentable de ML.</div>`;
+    }
+  }
+
+  // Update switchTab to handle catalog
+
+</script>
+</body>
+</html>
