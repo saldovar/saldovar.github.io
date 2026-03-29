@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Costos ML — Portal Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a25;
+    --border: #2a2a3a;
+    --accent: #FFE033;
+    --accent2: #3BFFA0;
+    --red: #FF4545;
+    --orange: #FF8C00;
+    --text: #f0f0f8;
+    --muted: #6b6b8a;
+    --font-mono: 'Space Mono', monospace;
+    --font-display: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-image: 
+      radial-gradient(ellipse at 20% 0%, rgba(255,224,51,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(59,255,160,0.03) 0%, transparent 60%);
+  }
+
+  header {
+    max-width: 860px;
+    margin: 0 auto 48px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .brand-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.7;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+  }
+
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  input[type="number"], input[type="text"], select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255,224,51,0.08);
+  }
+
+  select option { background: #1a1a25; }
+
+  .toggle-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .toggle-btn {
+    padding: 10px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .toggle-btn:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Results Panel */
+  .results-panel {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    display: none;
+  }
+
+  .results-panel.visible { display: block; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .result-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .result-card.highlight {
+    border-color: var(--accent2);
+    background: rgba(59,255,160,0.05);
+  }
+
+  .result-card.danger {
+    border-color: var(--red);
+    background: rgba(255,69,69,0.06);
+  }
+
+  .result-card.warning {
+    border-color: var(--orange);
+    background: rgba(255,140,0,0.06);
+  }
+
+  .rc-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .rc-value {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .rc-value.green { color: var(--accent2); }
+  .rc-value.red { color: var(--red); }
+  .rc-value.yellow { color: var(--accent); }
+  .rc-value.orange { color: var(--orange); }
+
+  .rc-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* Breakdown table */
+  .breakdown {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .breakdown-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row .item { color: var(--muted); }
+  .breakdown-row .amount { color: var(--text); font-weight: 700; }
+  .breakdown-row .amount.neg { color: var(--red); }
+  .breakdown-row .amount.pos { color: var(--accent2); }
+  .breakdown-row.total-row {
+    border-top: 2px solid var(--border);
+    margin-top: 4px;
+    padding-top: 12px;
+    font-size: 15px;
+  }
+
+  /* Alert */
+  .alert {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    line-height: 1.6;
+    border: 1px solid;
+  }
+
+  .alert.danger { background: rgba(255,69,69,0.08); border-color: var(--red); color: #ffaaaa; }
+  .alert.warning { background: rgba(255,140,0,0.08); border-color: var(--orange); color: #ffd080; }
+  .alert.ok { background: rgba(59,255,160,0.08); border-color: var(--accent2); color: #aaffe0; }
+  .alert.show { display: block; }
+
+  /* CTA */
+  .calc-btn {
+    width: 100%;
+    margin-top: 4px;
+    padding: 14px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .calc-btn:hover { background: #fff; transform: translateY(-1px); }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* Profit meter */
+  .meter-wrap {
+    margin: 20px 0 8px;
+  }
+
+  .meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .meter-bar {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .meter-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1), background 0.4s;
+  }
+
+  .chip {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .chip-yellow { background: rgba(255,224,51,0.15); color: var(--accent); border: 1px solid rgba(255,224,51,0.3); }
+  .chip-green { background: rgba(59,255,160,0.15); color: var(--accent2); border: 1px solid rgba(59,255,160,0.3); }
+  .chip-red { background: rgba(255,69,69,0.15); color: var(--red); border: 1px solid rgba(255,69,69,0.3); }
+
+  /* Suggestion box */
+  .suggestion-box {
+    display: none;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .suggestion-box.show { display: block; }
+
+  .suggestion-header {
+    background: var(--surface2);
+    padding: 12px 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .suggestion-header span { color: var(--accent); }
+
+  .suggestion-target-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .suggestion-target-wrap label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .target-input {
+    width: 80px !important;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+    border-radius: 6px !important;
+  }
+
+  .recalc-btn {
+    padding: 6px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 700;
+  }
+
+  .recalc-btn:hover { background: var(--accent); color: #000; }
+
+  .suggestion-rows {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .sug-item {
+    padding: 18px 20px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .sug-item:last-child { border-right: none; }
+
+  .sug-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .sug-price {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .sug-detail {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .sug-detail strong { color: var(--accent2); }
+
+  footer {
+    max-width: 860px;
+    margin: 32px auto 0;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 620px) {
+    .container { grid-template-columns: 1fr; }
+    .results-panel { grid-column: 1; }
+    .result-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-tag">Portal Tech &amp; Gaming</span>
+    <h1>Simulador de<br><span>Costos ML</span></h1>
+  </div>
+  <div class="subtitle">
+    Comisión · Cargo fijo · Envío<br>
+    Neto real · % que se lleva ML<br>
+    v1.0 — mercadolibre.com.ar
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Input: Producto -->
+  <div class="panel">
+    <div class="panel-title">Datos del Producto</div>
+
+    <div class="field">
+      <label>Nombre del Producto</label>
+      <input type="text" id="productName" placeholder="Ej: Teclado Redragon K552" />
+    </div>
+
+    <div class="field">
+      <label>Precio de Venta (ARS $)</label>
+      <input type="number" id="salePrice" placeholder="0" min="0" />
+    </div>
+
+    <div class="field">
+      <label>Costo del Producto (ARS $)</label>
+      <input type="number" id="costPrice" placeholder="0 (opcional)" min="0" />
+    </div>
+
+    <div class="field">
+      <label>Categoría</label>
+      <select id="category">
+        <option value="general">General / Periféricos</option>
+        <option value="electronica">Electrónica / Computación</option>
+        <option value="consolas">Consolas y Videojuegos</option>
+        <option value="accesorios">Accesorios Gaming</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Input: Configuración -->
+  <div class="panel">
+    <div class="panel-title">Configuración ML</div>
+
+    <div class="field">
+      <label>Tipo de Publicación</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-premium" onclick="setType('premium')">
+          ★ Premium<br><small style="font-size:9px;opacity:0.7">~16.5%</small>
+        </button>
+        <button class="toggle-btn" id="btn-clasica" onclick="setType('clasica')">
+          Clásica<br><small style="font-size:9px;opacity:0.7">~13%</small>
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Logística</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-estandar" onclick="setLogistica('estandar')">
+          Estándar
+        </button>
+        <button class="toggle-btn" id="btn-full" onclick="setLogistica('full')">
+          Full ML
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Envío</label>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="btn-gratis" onclick="setEnvio('gratis')">
+          Gratis (vos)
+        </button>
+        <button class="toggle-btn active" id="btn-comprador" onclick="setEnvio('comprador')">
+          Lo paga el comprador
+        </button>
+      </div>
+    </div>
+
+    <div class="field" id="envio-manual-wrap" style="display:none">
+      <label>Costo del Envío que Absorbés (ARS $)</label>
+      <input type="number" id="shippingCost" placeholder="Ej: 2500" min="0" />
+    </div>
+
+    <button class="calc-btn" onclick="calcular()">↳ Calcular Neto Real</button>
+  </div>
+
+  <!-- Results -->
+  <div class="results-panel" id="resultsPanel">
+    <div class="panel-title">Resultado <span id="productLabel" style="color:var(--accent);margin-left:6px;text-transform:none;letter-spacing:0;font-size:11px;font-family:'Space Mono'"></span></div>
+
+    <div class="result-grid" id="resultGrid"></div>
+
+    <div class="meter-wrap">
+      <div class="meter-label">
+        <span>ML se queda</span>
+        <span id="meterPct">0%</span>
+      </div>
+      <div class="meter-bar">
+        <div class="meter-fill" id="meterFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="breakdown" id="breakdownSection"></div>
+
+    <div class="alert" id="alertBox"></div>
+
+    <!-- Suggestion Box -->
+    <div class="suggestion-box" id="suggestionBox">
+      <div class="suggestion-header">
+        💡 Sugerencia de Precio — <span>¿Cuánto cobrar para ganar lo que querés?</span>
+      </div>
+      <div class="suggestion-target-wrap">
+        <label>Margen objetivo:</label>
+        <input type="number" id="targetMargin" class="target-input" value="10" min="1" max="99" />
+        <label>%</label>
+        <button class="recalc-btn" onclick="calcularSugerencia()">↳ Recalcular</button>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:auto">sobre el precio de venta</span>
+      </div>
+      <div class="suggestion-rows" id="suggestionRows"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Basado en tarifas ML Argentina vigentes · Siempre verificar en mercadolibre.com.ar/simulador-de-costos
+</footer>
+
+<script>
+  let pubType = 'premium';
+  let logistica = 'estandar';
+  let envioMode = 'comprador';
+
+  function setType(t) {
+    pubType = t;
+    document.getElementById('btn-premium').classList.toggle('active', t === 'premium');
+    document.getElementById('btn-clasica').classList.toggle('active', t === 'clasica');
+  }
+
+  function setLogistica(l) {
+    logistica = l;
+    document.getElementById('btn-estandar').classList.toggle('active', l === 'estandar');
+    document.getElementById('btn-full').classList.toggle('active', l === 'full');
+  }
+
+  function setEnvio(e) {
+    envioMode = e;
+    document.getElementById('btn-gratis').classList.toggle('active', e === 'gratis');
+    document.getElementById('btn-comprador').classList.toggle('active', e === 'comprador');
+    document.getElementById('envio-manual-wrap').style.display = e === 'gratis' ? 'block' : 'none';
+  }
+
+  function fmt(n) {
+    return '$' + Math.round(n).toLocaleString('es-AR');
+  }
+
+  function pct(n) {
+    return n.toFixed(1) + '%';
+  }
+
+  // Comisiones ML Argentina (aprox vigentes)
+  function getComision(price, type) {
+    // Premium: ~16.5% todos los tramos
+    // Clásica: ~13% si >$60k, ~9% si <$60k (aprox)
+    if (type === 'premium') {
+      return 0.165;
+    } else {
+      // Clásica
+      if (price >= 60000) return 0.13;
+      return 0.09;
+    }
+  }
+
+  // Cargo fijo por tramo de precio
+  function getCargoFijo(price, type) {
+    if (type === 'clasica') return 0; // Clásica no tiene cargo fijo
+    // Premium
+    if (price <= 15000) return 1115;
+    if (price <= 25000) return 2300;
+    if (price <= 33000) return 2810;
+    if (price <= 60000) return 4000;
+    return 0; // >$60.000 sin cargo fijo
+  }
+
+  // Costo Full aproximado (fee manipulación por unidad)
+  function getFullFee(price) {
+    // Aprox 2.5% o mínimo fijo según categoría
+    return Math.max(Math.round(price * 0.025), 800);
+  }
+
+  function calcular() {
+    const price = parseFloat(document.getElementById('salePrice').value) || 0;
+    const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+    const shippingAbsorbido = envioMode === 'gratis' 
+      ? (parseFloat(document.getElementById('shippingCost').value) || 0)
+      : 0;
+    const productName = document.getElementById('productName').value || 'Producto';
+
+    if (price <= 0) {
+      alert('Ingresá el precio de venta.');
+      return;
+    }
+
+    const comisionRate = getComision(price, pubType);
+    const comisionMonto = price * comisionRate;
+    const cargoFijo = getCargoFijo(price, pubType);
+    const fullFee = logistica === 'full' ? getFullFee(price) : 0;
+
+    const totalDescuentos = comisionMonto + cargoFijo + shippingAbsorbido + fullFee;
+    const neto = price - totalDescuentos;
+    const pctML = (totalDescuentos / price) * 100;
+    const margenBruto = cost > 0 ? ((neto - cost) / price) * 100 : null;
+    const ganancia = cost > 0 ? neto - cost : null;
+
+    // Render
+    document.getElementById('productLabel').textContent = '→ ' + productName;
+    document.getElementById('resultsPanel').classList.add('visible');
+
+    const grid = document.getElementById('resultGrid');
+    let cardClass = pctML > 30 ? 'danger' : pctML > 20 ? 'warning' : 'highlight';
+    let valueClass = pctML > 30 ? 'red' : pctML > 20 ? 'orange' : 'green';
+
+    let cardsHtml = `
+      <div class="result-card highlight">
+        <span class="rc-label">Precio de Venta</span>
+        <span class="rc-value yellow">${fmt(price)}</span>
+        <span class="rc-sub">${pubType === 'premium' ? '★ Premium' : 'Clásica'} · ${logistica === 'full' ? 'Full' : 'Estándar'}</span>
+      </div>
+      <div class="result-card ${cardClass}">
+        <span class="rc-label">ML se lleva</span>
+        <span class="rc-value ${valueClass}">${pct(pctML)}</span>
+        <span class="rc-sub">${fmt(totalDescuentos)} en descuentos</span>
+      </div>
+      <div class="result-card highlight">
+        <span class="rc-label">Neto que Cobrás</span>
+        <span class="rc-value green">${fmt(neto)}</span>
+        <span class="rc-sub">Antes de impuestos</span>
+      </div>
+    `;
+
+    if (cost > 0 && ganancia !== null) {
+      let gClass = ganancia < 0 ? 'danger' : 'highlight';
+      let gValClass = ganancia < 0 ? 'red' : 'green';
+      cardsHtml += `
+        <div class="result-card ${gClass}">
+          <span class="rc-label">Ganancia Neta</span>
+          <span class="rc-value ${gValClass}">${fmt(ganancia)}</span>
+          <span class="rc-sub">Margen: ${margenBruto !== null ? pct(margenBruto) : '—'}</span>
+        </div>
+      `;
+    }
+
+    grid.innerHTML = cardsHtml;
+
+    // Meter
+    const meter = document.getElementById('meterFill');
+    const meterPct = document.getElementById('meterPct');
+    const w = Math.min(pctML, 100);
+    const meterColor = pctML > 30 ? '#FF4545' : pctML > 20 ? '#FF8C00' : '#3BFFA0';
+    meter.style.width = w + '%';
+    meter.style.background = meterColor;
+    meterPct.textContent = pct(pctML);
+    meterPct.style.color = meterColor;
+
+    // Breakdown
+    let tramo = price <= 15000 ? 'hasta $15.000' 
+      : price <= 25000 ? '$15k–$25k'
+      : price <= 33000 ? '$25k–$33k'
+      : price <= 60000 ? '$33k–$60k' : 'más de $60.000';
+
+    let breakdownHtml = `
+      <div class="breakdown-title">Desglose completo</div>
+      <div class="breakdown-row">
+        <span class="item">Precio de venta</span>
+        <span class="amount pos">${fmt(price)}</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="item">Comisión ${pubType === 'premium' ? 'Premium' : 'Clásica'} (${pct(comisionRate * 100)})</span>
+        <span class="amount neg">− ${fmt(comisionMonto)}</span>
+      </div>
+    `;
+
+    if (cargoFijo > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Cargo fijo (tramo ${tramo})</span>
+          <span class="amount neg">− ${fmt(cargoFijo)}</span>
+        </div>
+      `;
+    } else if (pubType === 'premium') {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Cargo fijo (tramo ${tramo})</span>
+          <span class="amount" style="color:var(--accent2)">Sin cargo ✓</span>
+        </div>
+      `;
+    }
+
+    if (shippingAbsorbido > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Envío gratis (absorbés)</span>
+          <span class="amount neg">− ${fmt(shippingAbsorbido)}</span>
+        </div>
+      `;
+    }
+
+    if (fullFee > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Fee Full ML (~2.5%)</span>
+          <span class="amount neg">− ${fmt(fullFee)}</span>
+        </div>
+      `;
+    }
+
+    breakdownHtml += `
+      <div class="breakdown-row total-row">
+        <span class="item" style="color:var(--text);font-weight:700">Neto que recibís</span>
+        <span class="amount pos">${fmt(neto)}</span>
+      </div>
+    `;
+
+    if (cost > 0) {
+      breakdownHtml += `
+        <div class="breakdown-row">
+          <span class="item">Costo del producto</span>
+          <span class="amount neg">− ${fmt(cost)}</span>
+        </div>
+        <div class="breakdown-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:12px;font-size:15px">
+          <span class="item" style="color:var(--text);font-weight:700">Ganancia neta</span>
+          <span class="amount ${ganancia < 0 ? 'neg' : 'pos'}" style="font-size:16px">${fmt(ganancia)}</span>
+        </div>
+      `;
+    }
+
+    document.getElementById('breakdownSection').innerHTML = breakdownHtml;
+
+    // Alert
+    const alertBox = document.getElementById('alertBox');
+    alertBox.className = 'alert';
+    if (neto < 0 || (cost > 0 && ganancia < 0)) {
+      alertBox.classList.add('danger', 'show');
+      alertBox.innerHTML = '⚠️ VENDÉS A PÉRDIDA — Revisá el precio o absorbé menos costos. Este producto no es rentable con la configuración actual.';
+    } else if (pctML > 30) {
+      alertBox.classList.add('warning', 'show');
+      alertBox.innerHTML = `⚡ Tramo peligroso — ML se lleva ${pct(pctML)} de tu precio. El cargo fijo aplasta el margen. Opciones: subir precio, no ofrecer envío gratis, o armar combos para superar los $60.000.`;
+    } else if (cargoFijo === 0 && price > 60000) {
+      alertBox.classList.add('ok', 'show');
+      alertBox.innerHTML = `✓ Sin cargo fijo — Productos sobre $60.000 no pagan cargo fijo. Tramo más rentable de ML. Margen estable.`;
+    } else {
+      alertBox.classList.add('show');
+      alertBox.className = 'alert ok show';
+      alertBox.innerHTML = `✓ Rentabilidad razonable — ML se lleva ${pct(pctML)}. Verificá igualmente con el simulador oficial antes de publicar.`;
+    }
+
+    document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Show suggestion box only if cost was entered
+    const sugBox = document.getElementById('suggestionBox');
+    if (cost > 0) {
+      sugBox.classList.add('show');
+      calcularSugerencia();
+    } else {
+      sugBox.classList.remove('show');
+    }
+  }
+
+  // Precio sugerido: búsqueda binaria para encontrar P tal que ganancia/P = margenTarget
+  function calcularPrecioParaMargen(cost, margenTarget, shippingAbsorbido) {
+    let lo = cost * 0.5, hi = cost * 30;
+    for (let i = 0; i < 80; i++) {
+      const mid = (lo + hi) / 2;
+      const comRate = getComision(mid, pubType);
+      const cf = getCargoFijo(mid, pubType);
+      const ff = logistica === 'full' ? getFullFee(mid) : 0;
+      const neto = mid - (mid * comRate + cf + shippingAbsorbido + ff);
+      const ganancia = neto - cost;
+      const margenReal = ganancia / mid;
+      if (margenReal < margenTarget) lo = mid;
+      else hi = mid;
+    }
+    return Math.ceil((lo + hi) / 2 / 100) * 100;
+  }
+
+  function calcularSugerencia() {
+    const cost = parseFloat(document.getElementById('costPrice').value) || 0;
+    if (cost <= 0) return;
+
+    const targetPct = (parseFloat(document.getElementById('targetMargin').value) || 10) / 100;
+    const shippingAbsorbido = envioMode === 'gratis'
+      ? (parseFloat(document.getElementById('shippingCost').value) || 0)
+      : 0;
+
+    const precio10 = calcularPrecioParaMargen(cost, 0.10, shippingAbsorbido);
+    const precioTarget = calcularPrecioParaMargen(cost, targetPct, shippingAbsorbido);
+    const precioBreakeven = calcularPrecioParaMargen(cost, 0, shippingAbsorbido);
+
+    function detalles(p) {
+      const comRate = getComision(p, pubType);
+      const cf = getCargoFijo(p, pubType);
+      const ff = logistica === 'full' ? getFullFee(p) : 0;
+      const totalDesc = p * comRate + cf + shippingAbsorbido + ff;
+      const neto = p - totalDesc;
+      const gan = neto - cost;
+      const margenReal = (gan / p * 100).toFixed(1);
+      const pctMLReal = (totalDesc / p * 100).toFixed(1);
+      return { neto, gan, margenReal, pctMLReal };
+    }
+
+    const dBE = detalles(precioBreakeven);
+    const d10 = detalles(precio10);
+    const dTarget = detalles(precioTarget);
+    const targetLabel = Math.round(targetPct * 100);
+    const showSeparate10 = Math.abs(precioTarget - precio10) >= 200 || targetLabel === 10;
+
+    let html = `
+      <div class="sug-item">
+        <span class="sug-label">Break-even — 0% margen</span>
+        <span class="sug-price">${fmt(precioBreakeven)}</span>
+        <span class="sug-detail">
+          Cubrís exactamente el costo<br>
+          ML se lleva: ${dBE.pctMLReal}% · Neto: ${fmt(dBE.neto)}
+        </span>
+      </div>
+    `;
+
+    if (showSeparate10 && targetLabel !== 10) {
+      html += `
+        <div class="sug-item" style="border-left:2px solid var(--accent2)">
+          <span class="sug-label">Para ganar 10%</span>
+          <span class="sug-price">${fmt(precio10)}</span>
+          <span class="sug-detail">
+            Ganancia: <strong>${fmt(d10.gan)}</strong><br>
+            ML se lleva: ${d10.pctMLReal}% · Neto: ${fmt(d10.neto)}
+          </span>
+        </div>
+      `;
+    }
+
+    html += `
+      <div class="sug-item" style="border-left:2px solid var(--accent);background:rgba(255,224,51,0.05)">
+        <span class="sug-label">★ Para ganar ${targetLabel}%</span>
+        <span class="sug-price" style="color:var(--accent)">${fmt(precioTarget)}</span>
+        <span class="sug-detail">
+          Ganancia: <strong style="color:var(--accent2)">${fmt(dTarget.gan)}</strong><br>
+          ML se lleva: ${dTarget.pctMLReal}% · Neto: ${fmt(dTarget.neto)}
+        </span>
+      </div>
+    `;
+
+    document.getElementById('suggestionRows').innerHTML = html;
+  }
+</script>
+</body>
+  </html>
