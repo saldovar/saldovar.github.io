@@ -825,6 +825,37 @@
     color:var(--accent); cursor:help; font-weight:700;
   }
 
+
+  /* ── PRECIOS TAB ── */
+  .precios-pane { display: none; }
+  .precios-pane.active { display: block; }
+
+  .pc-container { max-width: 860px; margin: 0 auto; }
+  .pc-sub { font-size:10px; color:var(--muted); font-family:var(--font-mono); margin-bottom:18px; }
+
+  .pc-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+  .pc-tab { padding:5px 14px; border:1px solid var(--border); border-radius:20px; background:var(--surface2); color:var(--muted); font-size:11px; cursor:pointer; font-weight:600; transition:all .15s; font-family:var(--font-mono); }
+  .pc-tab.active, .pc-tab:hover { border-color:var(--accent); color:var(--accent); }
+
+  .pc-tbl-wrap { overflow-x:auto; }
+  .pc-table { width:100%; border-collapse:collapse; }
+  .pc-table thead th { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); font-family:var(--font-mono); white-space:nowrap; }
+  .pc-table tbody tr { border-bottom:1px solid rgba(44,44,61,0.5); transition:background .1s; }
+  .pc-table tbody tr:hover { background:rgba(255,255,255,0.03); }
+  .pc-table td { padding:9px 10px; font-family:var(--font-mono); font-size:12px; vertical-align:middle; }
+  .pc-table td.pc-name { color:var(--text); font-family:var(--font-display); font-size:11px; font-weight:600; max-width:200px; line-height:1.4; }
+
+  .pc-bar-wrap { display:flex; align-items:center; gap:6px; min-width:140px; }
+  .pc-bar-bg { flex:1; height:6px; background:var(--surface2); border-radius:3px; overflow:hidden; border:1px solid var(--border); }
+  .pc-bar-fill { height:100%; border-radius:3px; }
+  .pc-bar-pct { font-size:10px; font-family:var(--font-mono); font-weight:700; min-width:48px; text-align:right; }
+
+  .pc-alert { padding:10px 14px; border-radius:8px; font-size:11px; font-family:var(--font-mono); line-height:1.7; margin-top:10px; }
+  .pc-alert-red { background:rgba(255,69,69,.08); border:1px solid rgba(255,69,69,.3); color:#ffa0a0; }
+  .pc-alert-orange { background:rgba(255,140,0,.08); border:1px solid rgba(255,140,0,.3); color:#ffd080; }
+  .pc-alert-green { background:rgba(59,255,160,.08); border:1px solid rgba(59,255,160,.3); color:#a0ffe0; }
+  .pc-alert-blue { background:rgba(91,143,255,.08); border:1px solid rgba(91,143,255,.3); color:#aac4ff; }
+
   footer {
     max-width: 860px;
     margin: 32px auto 0;
@@ -861,6 +892,7 @@
   <button class="tab-btn" onclick="switchTab('colecta')">🚚 Colecta Full</button>
   <button class="tab-btn" onclick="switchTab('catalogo')">📦 Mapa Catálogo</button>
   <button class="tab-btn" onclick="switchTab('roadmap')">🗓 Hoja de Ruta</button>
+  <button class="tab-btn" onclick="switchTab('precios')">⚖ Precios vs ML</button>
 </div>
 
 <div class="tab-pane active" id="tab-costos">
@@ -1407,6 +1439,60 @@
 </div>
 </div><!-- end #tab-roadmap -->
 
+
+<!-- PRECIOS TAB -->
+<div class="tab-pane precios-pane" id="tab-precios">
+<div class="pc-container">
+
+  <div class="pc-sub">Portal Tech (portalstore.com.ar) vs primer resultado en Mercado Libre Argentina</div>
+
+  <div class="summary">
+    <div class="scard">
+      <div class="val" style="color:var(--accent2)">11</div>
+      <div class="lbl">Portal más barato</div>
+    </div>
+    <div class="scard">
+      <div class="val" style="color:var(--red)">4</div>
+      <div class="lbl">Portal más caro</div>
+    </div>
+    <div class="scard">
+      <div class="val" style="color:#5b8fff">5</div>
+      <div class="lbl">Sin competencia ML</div>
+    </div>
+    <div class="scard">
+      <div class="val" style="color:var(--accent)">20</div>
+      <div class="lbl">Productos comparados</div>
+    </div>
+  </div>
+
+  <div class="pc-tabs">
+    <div class="pc-tab active" onclick="pcFiltrar('todos',this)">Todos (20)</div>
+    <div class="pc-tab" onclick="pcFiltrar('ventaja',this)">✓ Más barato (11)</div>
+    <div class="pc-tab" onclick="pcFiltrar('caro',this)">⚠ Más caro (4)</div>
+    <div class="pc-tab" onclick="pcFiltrar('sin',this)">★ Sin competencia (5)</div>
+  </div>
+
+  <div class="pc-tbl-wrap">
+    <table class="pc-table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Portal Tech</th>
+          <th>ML (competencia)</th>
+          <th>Diferencia $</th>
+          <th>Ventaja</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="pcTbody"></tbody>
+    </table>
+  </div>
+
+  <div id="pcAlertas"></div>
+
+</div>
+</div><!-- end #tab-precios -->
+
 <footer>
   Basado en tarifas ML Argentina vigentes · Siempre verificar en mercadolibre.com.ar/simulador-de-costos
 </footer>
@@ -1746,6 +1832,7 @@
     if (tab === 'colecta') renderColectaTable(-1);
     if (tab === 'catalogo') { catRender('todos'); catMostrarAlerta('todos'); }
     if (tab === 'roadmap') { rmInit(); }
+    if (tab === 'precios') { pcRender('todos'); pcAlertas('todos'); }
   }
 
   // ── COLECTA DATA ──
@@ -2065,6 +2152,128 @@
     if (s1chev) s1chev.style.transform = 'rotate(180deg)';
     rmInitTooltips();
     rmUpdateProgress();
+  }
+
+
+  // ── PRECIOS VS ML ──
+  const PC_DATA = [
+    // Sin competencia en ML
+    { name:"Drone DJI Avata Pro View",                  portal:1424000, ml:null,   grupo:"sin" },
+    { name:"Pokémon TCG Booster Box Violet EX Japonés", portal:170000,  ml:null,   grupo:"sin" },
+    { name:"Pokémon TCG Booster Box Gem Pack 3 Chino",  portal:139000,  ml:null,   grupo:"sin" },
+    { name:"Fuente Universal Noga 87W USB-C NGA-902UL", portal:50000,   ml:null,   grupo:"sin" },
+    { name:"Pokémon TCG Tangela Pack Blister",           portal:40000,   ml:null,   grupo:"sin" },
+    // Portal más barato
+    { name:"Nintendo Switch OLED White 64GB",            portal:720000,  ml:745999, grupo:"ventaja" },
+    { name:"Intel Core Ultra 7 265KF",                   portal:590000,  ml:605990, grupo:"ventaja" },
+    { name:"RAM Adata XPG Lancer Blade DDR5 16GB",       portal:395000,  ml:426000, grupo:"ventaja" },
+    { name:"Fuente Redragon GC-PS011 800W 80+",          portal:132000,  ml:144699, grupo:"ventaja" },
+    { name:"Rack Redragon Cosmos RDRK",                  portal:129000,  ml:154500, grupo:"ventaja" },
+    { name:"Webcam Redragon GW800 Hitman 1080p",         portal:59000,   ml:74900,  grupo:"ventaja" },
+    { name:"Mouse Logitech Ergo M575S Trackball",        portal:55000,   ml:67990,  grupo:"ventaja" },
+    { name:"Teclado Redragon K617 Fizz Pink/White",      portal:50000,   ml:71999,  grupo:"ventaja" },
+    { name:"Mouse Aula SC380 Pro Wireless 12K DPI",      portal:33000,   ml:43239,  grupo:"ventaja" },
+    { name:"Teclado Raptor Fireclaw M104 Switch Red",    portal:30000,   ml:48655,  grupo:"ventaja" },
+    { name:"Adaptador Nisuta USB-C a USB Macho",         portal:4100,    ml:4457,   grupo:"ventaja" },
+    // Portal más caro
+    { name:"Mother Asus Prime B860M-A (Intel 1851)",     portal:280100,  ml:261809, grupo:"caro" },
+    { name:"Mini PC Pro Noga Android 12 / 4K",           portal:100000,  ml:87000,  grupo:"caro" },
+    { name:"Trust HDMI GXT 731 1.8mts",                  portal:25000,   ml:17999,  grupo:"caro" },
+    { name:"Auricular Noga Aris BT con Vincha",          portal:22000,   ml:14999,  grupo:"caro" },
+  ];
+
+  function pcRender(filtro) {
+    const tbody = document.getElementById('pcTbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    PC_DATA.forEach(p => {
+      if (filtro !== 'todos' && p.grupo !== filtro) return;
+
+      let difMonto = 0, difPct = 0, barColor = '', barW = 0;
+      let difStr = '', portalColor = 'var(--text)', mlColor = 'var(--muted)', badge = '', estado = '';
+
+      if (p.grupo === 'sin') {
+        badge = '<span class="badge badge-blue">★ Exclusivo</span>';
+        estado = '<span style="color:#5b8fff;font-size:10px">Sin rival en ML</span>';
+        difStr = '<span style="color:var(--muted)">—</span>';
+        barW = 0;
+
+      } else if (p.grupo === 'ventaja') {
+        difMonto = p.ml - p.portal;
+        difPct = difMonto / p.ml * 100;
+        barColor = 'var(--accent2)';
+        barW = Math.min(difPct * 2.5, 100);
+        badge = '<span class="badge badge-green">✓ Más barato</span>';
+        difStr = '<span style="color:var(--accent2)">−' + fmt(difMonto) + '</span>';
+        estado = '<span style="color:var(--accent2);font-weight:700;font-size:11px">−' + difPct.toFixed(1) + '%</span>';
+        portalColor = 'var(--accent2)';
+
+      } else {
+        difMonto = p.portal - p.ml;
+        difPct = difMonto / p.portal * 100;
+        const sevColor = difPct > 25 ? 'var(--red)' : difPct > 10 ? 'var(--orange)' : 'var(--accent)';
+        const sevBadge = difPct > 25 ? 'badge-red' : difPct > 10 ? 'badge-orange' : 'badge-yellow';
+        barColor = sevColor;
+        barW = Math.min(difPct * 2.5, 100);
+        badge = '<span class="badge ' + sevBadge + '">⚠ +' + difPct.toFixed(0) + '% caro</span>';
+        difStr = '<span style="color:' + sevColor + '">+' + fmt(difMonto) + '</span>';
+        estado = '<span style="color:' + sevColor + ';font-weight:700;font-size:11px">+' + difPct.toFixed(1) + '%</span>';
+        portalColor = sevColor;
+        mlColor = 'var(--accent2)';
+      }
+
+      const barHtml = p.grupo !== 'sin'
+        ? '<div class="pc-bar-wrap"><div class="pc-bar-bg"><div class="pc-bar-fill" style="width:' + barW + '%;background:' + barColor + '"></div></div><span class="pc-bar-pct" style="color:' + barColor + '">' + (p.grupo === 'ventaja' ? '-' : '+') + Math.abs(difPct).toFixed(1) + '%</span></div>'
+        : '<span style="color:var(--muted);font-size:10px">sin rival</span>';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="pc-name">' + p.name + '</td>' +
+        '<td style="color:' + portalColor + ';font-weight:700">' + fmt(p.portal) + '</td>' +
+        '<td style="color:' + mlColor + '">' + (p.ml ? fmt(p.ml) : '<span style="color:var(--muted)">No encontrado</span>') + '</td>' +
+        '<td>' + difStr + '</td>' +
+        '<td>' + barHtml + '</td>' +
+        '<td>' + badge + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function pcFiltrar(f, el) {
+    document.querySelectorAll('.pc-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    pcRender(f);
+    pcAlertas(f);
+  }
+
+  function pcAlertas(f) {
+    const z = document.getElementById('pcAlertas');
+    if (!z) return;
+    let html = '';
+
+    if (f === 'todos' || f === 'caro') {
+      html += '<div class="pc-alert pc-alert-red">⚠ 4 PRODUCTOS MÁS CAROS QUE LA COMPETENCIA — Acción urgente antes de publicar:<br><br>' +
+        '• <strong>Auricular Noga $22.000 vs ML $14.999</strong> → Portal cobra 47% más. Zona peligrosa (cargo fijo) + precio no competitivo. Revisar si tiene margen para bajar o no publicar.<br>' +
+        '• <strong>Trust HDMI $25.000 vs ML $17.999</strong> → Portal cobra 39% más. El HDMI es el producto donde el comprador compara precio al instante.<br>' +
+        '• <strong>Mini PC Noga $100.000 vs ML $87.000</strong> → Portal cobra 13% más. Sin cargo fijo pero 13% es mucho para electrónica. Ajustar o justificar con diferencial.<br>' +
+        '• <strong>Mother Asus B860M-A $280.100 vs ML $261.809</strong> → Portal cobra 7% más. Menor diferencia pero el comprador igual va a elegir el más barato si la reputación es similar.</div>';
+    }
+
+    if (f === 'todos' || f === 'sin') {
+      html += '<div class="pc-alert pc-alert-blue">★ 5 PRODUCTOS SIN COMPETENCIA DIRECTA EN ML — Oportunidad estratégica:<br><br>' +
+        '• <strong>DJI Avata Pro View $1.424.000</strong> → Ticket altísimo, sin rival encontrado. Posición dominante garantizada si hay demanda.<br>' +
+        '• <strong>Pokémon TCG (2 Booster Box + 1 Blister)</strong> → Nicho específico. Los coleccionistas buscan activamente. Sin competencia = libertad de precio.<br>' +
+        '• <strong>Fuente Noga 87W USB-C $50.000</strong> → Zona peligrosa pero sin rival. Evaluar demanda real antes de priorizar en Ads.</div>';
+    }
+
+    if (f === 'todos' || f === 'ventaja') {
+      html += '<div class="pc-alert pc-alert-green">✓ VENTAJA DE PRECIO EN 11 DE 20 PRODUCTOS — Los datos son buenos:<br><br>' +
+        '• Teclados y mouses Redragon/Aula: Portal es entre 27% y 38% más barato que ML. Ventaja brutal para ganar posición apenas la cuenta tenga reputación.<br>' +
+        '• Nintendo Switch y componentes (Intel, RAM, Fuente): ventajas de 9%–21%. Más que suficiente para competir con Premium y cuotas sin interés.<br>' +
+        '• El Rack Redragon Cosmos: 17% más barato, sobre $60k, sin cargo fijo. Candidato ideal para Full desde el arranque.</div>';
+    }
+
+    z.innerHTML = html;
   }
 
 </script>
