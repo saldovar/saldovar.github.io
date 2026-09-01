@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "title": "Despertar",
+    "season": 1,
+    "episode": 1,
+    "category": "Serie",
+    "description": "El primer episodio de la temporada. Un comienzo tranquilo que planta las semillas de lo que vendrá.",
+    "thumbnail": "https://picsum.photos/seed/despertar/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "tags": ["drama", "serie", "temporada1", "estreno"]
+  },
+  {
+    "id": 2,
+    "title": "El cruce",
+    "season": 1,
+    "episode": 2,
+    "category": "Serie",
+    "description": "Los protagonistas deben tomar una decisión que cambiará el rumbo de la historia.",
+    "thumbnail": "https://picsum.photos/seed/elcruce/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+    "tags": ["drama", "serie", "temporada1"]
+  },
+  {
+    "id": 3,
+    "title": "Bajo tierra",
+    "season": 1,
+    "episode": 3,
+    "category": "Serie",
+    "description": "Un descubrimiento inesperado obliga al grupo a replantear su plan original.",
+    "thumbnail": "https://picsum.photos/seed/bajotierra/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/bumblebees.mp4",
+    "tags": ["suspenso", "serie", "temporada1"]
+  },
+  {
+    "id": 4,
+    "title": "La señal",
+    "season": 2,
+    "episode": 1,
+    "category": "Serie",
+    "description": "Una nueva temporada comienza con una señal que nadie sabe interpretar.",
+    "thumbnail": "https://picsum.photos/seed/lasenal/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "tags": ["ciencia ficción", "serie", "temporada2", "estreno"]
+  },
+  {
+    "id": 5,
+    "title": "Recuerdos rotos",
+    "season": 2,
+    "episode": 2,
+    "category": "Serie",
+    "description": "Un personaje del pasado regresa y nada vuelve a ser igual.",
+    "thumbnail": "https://picsum.photos/seed/recuerdos/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+    "tags": ["ciencia ficción", "serie", "temporada2"]
+  },
+  {
+    "id": 6,
+    "title": "Rutas del norte",
+    "season": 1,
+    "episode": 1,
+    "category": "Documental",
+    "description": "Un recorrido visual por paisajes remotos y las personas que los habitan.",
+    "thumbnail": "https://picsum.photos/seed/rutasnorte/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/bumblebees.mp4",
+    "tags": ["naturaleza", "documental", "viajes"]
+  },
+  {
+    "id": 7,
+    "title": "El taller",
+    "season": 1,
+    "episode": 1,
+    "category": "Documental",
+    "description": "Dentro del proceso creativo de un artesano que trabaja como hace un siglo.",
+    "thumbnail": "https://picsum.photos/seed/eltaller/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "tags": ["oficios", "documental"]
+  },
+  {
+    "id": 8,
+    "title": "Cortometraje: Umbral",
+    "season": 1,
+    "episode": 1,
+    "category": "Cortometraje",
+    "description": "Una historia autoconclusiva sobre un momento de decisión.",
+    "thumbnail": "https://picsum.photos/seed/umbral/600/338",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/friday.mp4",
+    "tags": ["drama", "cortometraje"]
+  }
+]
